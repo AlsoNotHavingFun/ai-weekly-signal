@@ -1,0 +1,137 @@
+[
+  {
+    "type": "weekly",
+    "filled": 0,
+    "edition": {
+      "number": 1,
+      "date": "March 6, 2026"
+    },
+    "news": [
+      {
+        "tag": "Models",
+        "headline": "Your story 1 headline goes here",
+        "desc": "A short 1–2 sentence summary of why this story matters and what happened.",
+        "url": "https://example.com",
+        "checked": false
+      },
+      {
+        "tag": "Research",
+        "headline": "Your second story headline goes here",
+        "desc": "A short 1–2 sentence summary of why this story matters and what happened.",
+        "url": "https://example.com",
+        "checked": false
+      },
+      {
+        "tag": "Industry",
+        "headline": "Your third story headline goes here",
+        "desc": "A short 1–2 sentence summary of why this story matters and what happened.",
+        "url": "https://example.com"
+      },
+      {
+        "tag": "Policy",
+        "headline": "Your fourth story headline goes here",
+        "desc": "A short 1–2 sentence summary of why this story matters and what happened.",
+        "url": "https://example.com"
+      },
+      {
+        "tag": "Tools",
+        "headline": "Your fifth story headline goes here",
+        "desc": "A short 1–2 sentence summary of why this story matters and what happened.",
+        "url": "https://example.com"
+      }
+    ],
+    "date": "2026-03-06"
+  },
+  {
+    "type": "weekly",
+    "filled": 1,
+    "edition": {
+      "number": 2,
+      "date": "March 13, 2026"
+    },
+    "news": [
+      {
+        "tag": "test",
+        "headline": "test test test",
+        "desc": "bigger test of consistency",
+        "url": "https://example.com",
+        "checked": true
+      },
+      {
+        "tag": "Research",
+        "headline": "Your story 2 headline goes here",
+        "desc": "A short 1–2 sentence summary of why this story matters and what happened.",
+        "url": "https://example.com",
+        "checked": false
+      },
+      {
+        "tag": "Industry",
+        "headline": "Your story 3 headline goes here",
+        "desc": "A short 1–2 sentence summary of why this story matters and what happened.",
+        "url": "https://example.com",
+        "checked": false
+      },
+      {
+        "tag": "Policy",
+        "headline": "Your story 4 headline goes here",
+        "desc": "A short 1–2 sentence summary of why this story matters and what happened.",
+        "url": "https://example.com",
+        "checked": false
+      },
+      {
+        "tag": "Tools",
+        "headline": "Your story 5 headline goes here",
+        "desc": "A short 1–2 sentence summary of why this story matters and what happened.",
+        "url": "https://example.com",
+        "checked": false
+      }
+    ],
+    "date": "2026-03-13"
+  },
+  {
+    "type": "monthly",
+    "filled": 5,
+    "edition": {
+      "number": 3,
+      "date": "March 31, 2026"
+    },
+    "news": [
+      {
+        "tag": "Models",
+        "headline": "Your story 1 headline goes here",
+        "desc": "A short 1–2 sentence summary of why this story matters and what happened.",
+        "url": "https://example.com",
+        "checked": true
+      },
+      {
+        "tag": "Research",
+        "headline": "Your story 2 headline goes here",
+        "desc": "A short 1–2 sentence summary of why this story matters and what happened.",
+        "url": "https://example.com",
+        "checked": true
+      },
+      {
+        "tag": "Industry",
+        "headline": "Your story 3 headline goes here",
+        "desc": "A short 1–2 sentence summary of why this story matters and what happened.",
+        "url": "https://example.com",
+        "checked": true
+      },
+      {
+        "tag": "Policy",
+        "headline": "Your story 4 headline goes here",
+        "desc": "A short 1–2 sentence summary of why this story matters and what happened.",
+        "url": "https://example.com",
+        "checked": true
+      },
+      {
+        "tag": "Tools",
+        "headline": "Your story 5 headline goes here",
+        "desc": "A short 1–2 sentence summary of why this story matters and what happened.",
+        "url": "https://example.com",
+        "checked": true
+      }
+    ],
+    "date": "2026-03-31"
+  }
+]

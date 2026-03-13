@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AI Weekly Signal — Calendar</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #0e0e0e;
+      --paper: #f5f0e8;
+      --accent: #c0392b;
+      --muted: #7a7060;
+      --rule: #d4cfc5;
+      --green: #6bbf72;
+      --green-hover: #52a859;
+      --purple: #7c3aed;
+      --purple-hover: #6d28d9;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+    }
+
+    /* ── Masthead ── */
+    .masthead {
+      border-bottom: 3px double var(--ink);
+      padding: 2rem 0 1rem;
+      text-align: center;
+      background: var(--paper);
+    }
+    .masthead-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.5rem;
+    }
+    .masthead-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(3rem, 8vw, 6rem);
+      font-weight: 900;
+      line-height: 0.95;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+    }
+    .masthead-title span { color: var(--accent); }
+    .masthead-subtitle {
+      margin-top: 0.9rem;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* ── Calendar wrapper ── */
+    .cal-wrap {
+      max-width: 960px;
+      margin: 3rem auto 5rem;
+      padding: 0 1.5rem;
+    }
+
+    /* ── Calendar toolbar ── */
+    .cal-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+    }
+    .cal-nav {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .cal-nav-btn {
+      background: none;
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      width: 2rem;
+      height: 2rem;
+      cursor: pointer;
+      font-size: 0.85rem;
+      color: var(--ink);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .cal-nav-btn:hover { border-color: var(--ink); }
+    .cal-month-label {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+    .cal-today-btn {
+      background: none;
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      padding: 0.3rem 0.8rem;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .cal-today-btn:hover { border-color: var(--accent); background: rgba(192,57,43,0.05); }
+
+    .cal-view-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .cal-view-select {
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      background: var(--paper);
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.08em;
+      color: var(--ink);
+      padding: 0.3rem 0.6rem;
+      cursor: pointer;
+    }
+
+    /* ── Calendar grid ── */
+    .cal-grid {
+      border: 1px solid var(--rule);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    /* Day-of-week headers */
+    .cal-header-row {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      background: var(--paper);
+      border-bottom: 2px solid var(--ink);
+    }
+    .cal-header-cell {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 0.6rem 0;
+      text-align: center;
+    }
+    .cal-header-cell.is-friday { color: var(--accent); }
+
+    /* Weeks */
+    .cal-weeks { display: flex; flex-direction: column; }
+    .cal-week {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      border-bottom: 1px solid var(--rule);
+    }
+    .cal-week:last-child { border-bottom: none; }
+
+    /* Day cells */
+    .cal-day {
+      min-height: 110px;
+      padding: 0.6rem 0.7rem;
+      border-right: 1px solid var(--rule);
+      position: relative;
+      background: var(--paper);
+    }
+    .cal-day:last-child { border-right: none; }
+    .cal-day.other-month { background: #eeeae0; }
+    .cal-day.other-month .cal-day-num { color: var(--rule); }
+
+    .cal-day-num {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--ink);
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+
+    /* Today highlight */
+    .cal-day.is-today .cal-day-num {
+      color: var(--accent);
+      font-weight: 500;
+      border-bottom: 2px solid var(--accent);
+      display: inline-block;
+      padding-bottom: 1px;
+    }
+
+    /* ── Friday diamond ── */
+    .friday-dot {
+      display: inline-block;
+      width: 13px;
+      height: 13px;
+      border-radius: 2px;
+      transform: rotate(45deg);
+      margin-top: 0.45rem;
+      transition: transform 0.15s;
+    }
+    /* Weekly dot — 6 fill states (0 = draft outline → 5 = forest green) */
+    a.friday-dot { cursor: pointer; text-decoration: none; }
+
+    a.friday-dot.filled-0 { background: transparent; border: 1.5px solid var(--rule); box-sizing: border-box; }
+    a.friday-dot.filled-1 { background: #a8d4aa; }
+    a.friday-dot.filled-2 { background: #82be86; }
+    a.friday-dot.filled-3 { background: #5fa864; }
+    a.friday-dot.filled-4 { background: #449249; }
+    a.friday-dot.filled-5 { background: #317d36; }
+
+    a.friday-dot.filled-0:hover { border-color: var(--green); transform: rotate(45deg) scale(1.15); }
+    a.friday-dot.filled-1:hover { background: #92c895; transform: rotate(45deg) scale(1.15); }
+    a.friday-dot.filled-2:hover { background: #6cb270; transform: rotate(45deg) scale(1.15); }
+    a.friday-dot.filled-3:hover { background: #4d9652; transform: rotate(45deg) scale(1.15); }
+    a.friday-dot.filled-4:hover { background: #37813c; transform: rotate(45deg) scale(1.15); }
+    a.friday-dot.filled-5:hover { background: #256b2a; transform: rotate(45deg) scale(1.15); }
+
+    /* ── Monthly diamond ── */
+    .month-dot {
+      display: inline-block;
+      width: 13px;
+      height: 13px;
+      border-radius: 2px;
+      transform: rotate(45deg);
+      margin-top: 0.45rem;
+      margin-left: 0.35rem;
+      transition: transform 0.15s;
+    }
+    a.month-dot {
+      background: var(--purple);
+      cursor: pointer;
+      text-decoration: none;
+    }
+    a.month-dot:hover {
+      background: var(--purple-hover);
+      transform: rotate(45deg) scale(1.15);
+    }
+    /* Monthly dot — same 6-state system but purple */
+    a.month-dot { cursor: pointer; text-decoration: none; }
+
+    a.month-dot.filled-0 { background: transparent; border: 1.5px solid var(--rule); box-sizing: border-box; }
+    a.month-dot.filled-1 { background: #c4aff0; }
+    a.month-dot.filled-2 { background: #a98de3; }
+    a.month-dot.filled-3 { background: #8f6dd5; }
+    a.month-dot.filled-4 { background: #7551c4; }
+    a.month-dot.filled-5 { background: #5e3aaf; }
+
+    a.month-dot.filled-0:hover { border-color: var(--purple); transform: rotate(45deg) scale(1.15); }
+    a.month-dot.filled-1:hover { background: #b49de8; transform: rotate(45deg) scale(1.15); }
+    a.month-dot.filled-2:hover { background: #9a7cd9; transform: rotate(45deg) scale(1.15); }
+    a.month-dot.filled-3:hover { background: #7f5ec9; transform: rotate(45deg) scale(1.15); }
+    a.month-dot.filled-4:hover { background: #6645b8; transform: rotate(45deg) scale(1.15); }
+    a.month-dot.filled-5:hover { background: #4f2f9e; transform: rotate(45deg) scale(1.15); }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      padding: 2rem;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.15em;
+      color: var(--rule);
+      text-transform: uppercase;
+      border-top: 1px solid var(--rule);
+    }
+
+    @media (max-width: 600px) {
+      .cal-day { min-height: 70px; padding: 0.4rem; }
+      .cal-month-label { font-size: 1.1rem; }
+      .cal-view-wrap { display: none; }
+      .friday-btn { width: 22px; height: 22px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Masthead ── -->
+<header class="masthead">
+  <div class="masthead-eyebrow">Curated Intelligence</div>
+  <div class="masthead-title">AI Weekly<br><span>Signal</span></div>
+  <div class="masthead-subtitle">Weekly Archive &nbsp;◆&nbsp; Every Friday</div>
+</header>
+
+<!-- ── Calendar ── -->
+<div class="cal-wrap">
+
+  <div class="cal-toolbar">
+    <!-- Left: nav -->
+    <div class="cal-nav">
+      <button class="cal-nav-btn" id="prev-btn" aria-label="Previous month">&#8249;</button>
+      <button class="cal-nav-btn" id="next-btn" aria-label="Next month">&#8250;</button>
+      <span class="cal-month-label" id="month-label"></span>
+      <button class="cal-today-btn" id="today-btn">Today</button>
+    </div>
+    <!-- Right: view selector -->
+    <div class="cal-view-wrap">
+      View by
+      <select class="cal-view-select">
+        <option>Month</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="cal-grid">
+    <div class="cal-header-row">
+      <div class="cal-header-cell">Sun</div>
+      <div class="cal-header-cell">Mon</div>
+      <div class="cal-header-cell">Tue</div>
+      <div class="cal-header-cell">Wed</div>
+      <div class="cal-header-cell">Thu</div>
+      <div class="cal-header-cell is-friday">Fri</div>
+      <div class="cal-header-cell">Sat</div>
+    </div>
+    <div class="cal-weeks" id="cal-weeks"></div>
+  </div>
+
+</div>
+
+<footer>AI Weekly Signal &nbsp;◆&nbsp; Curated by hand, every week</footer>
+
+<script>
+  let EDITIONS = {};         // weekly:  "YYYY-MM-DD" → filled count (0–5)
+  let MONTHLY_EDITIONS = {}; // monthly: "YYYY-MM-DD" → filled count (0–5)
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  let viewYear  = today.getFullYear();
+  let viewMonth = today.getMonth();
+
+  // Convert EDITIONS keys to comparable timestamps
+  function editionKey(date) {
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const d = String(date.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+  }
+
+  function buildCalendar(year, month) {
+    const label = new Date(year, month, 1)
+      .toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+    document.getElementById('month-label').textContent = label;
+
+    const weeksEl = document.getElementById('cal-weeks');
+    weeksEl.innerHTML = '';
+
+    const firstDay    = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const daysInPrev  = new Date(year, month, 0).getDate();
+
+    const cells = [];
+
+    for (let d = firstDay - 1; d >= 0; d--) {
+      cells.push({ day: daysInPrev - d, thisMonth: false,
+        year: month === 0 ? year - 1 : year,
+        month: month === 0 ? 11 : month - 1 });
+    }
+    for (let d = 1; d <= daysInMonth; d++) {
+      cells.push({ day: d, thisMonth: true, year, month });
+    }
+    const remaining = (7 - (cells.length % 7)) % 7;
+    for (let d = 1; d <= remaining; d++) {
+      cells.push({ day: d, thisMonth: false,
+        year: month === 11 ? year + 1 : year,
+        month: month === 11 ? 0 : month + 1 });
+    }
+
+    for (let w = 0; w < cells.length / 7; w++) {
+      const weekEl = document.createElement('div');
+      weekEl.className = 'cal-week';
+
+      for (let c = 0; c < 7; c++) {
+        const cell = cells[w * 7 + c];
+        const date = new Date(cell.year, cell.month, cell.day);
+        date.setHours(0, 0, 0, 0);
+
+        const dayEl = document.createElement('div');
+        dayEl.className = 'cal-day';
+        if (!cell.thisMonth) dayEl.classList.add('other-month');
+        if (date.getTime() === today.getTime()) dayEl.classList.add('is-today');
+
+        const numEl = document.createElement('span');
+        numEl.className = 'cal-day-num';
+        numEl.textContent = cell.day;
+        dayEl.appendChild(numEl);
+
+        // Every Friday gets a dot — green (clickable) if published, gray if not
+        if (date.getDay() === 5) {
+          const key  = editionKey(date);
+          const dateLabel = date.toLocaleDateString('en-US',
+            { month: 'long', day: 'numeric', year: 'numeric' });
+
+          const filled = EDITIONS.hasOwnProperty(key) ? EDITIONS[key] : -1;
+          const dot = document.createElement('a');
+          dot.className = `friday-dot filled-${Math.max(0, filled)}`;
+          dot.href  = `NewsPage.html?date=${key}`;
+          dot.title = filled === 5 ? `Read edition — ${dateLabel}`
+                    : filled > 0  ? `In progress (${filled}/5) — ${dateLabel}`
+                    :               `Draft edition — ${dateLabel}`;
+          dayEl.appendChild(dot);
+        }
+
+        // Last day of the month gets a purple monthly dot
+        const lastDayOfMonth = new Date(cell.year, cell.month + 1, 0).getDate();
+        if (cell.thisMonth && cell.day === lastDayOfMonth) {
+          const key = editionKey(date);
+          const monthLabel = date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+
+          const mfilled = MONTHLY_EDITIONS.hasOwnProperty(key) ? MONTHLY_EDITIONS[key] : -1;
+          const mdot = document.createElement('a');
+          mdot.className = `month-dot filled-${Math.max(0, mfilled)}`;
+          mdot.href  = `NewsPage.html?date=${key}&type=monthly`;
+          mdot.title = mfilled === 5 ? `Monthly recap — ${monthLabel}`
+                     : mfilled > 0  ? `In progress (${mfilled}/5) — ${monthLabel}`
+                     :                `Draft monthly recap — ${monthLabel}`;
+          dayEl.appendChild(mdot);
+        }
+
+        weekEl.appendChild(dayEl);
+      }
+      weeksEl.appendChild(weekEl);
+    }
+  }
+
+  document.getElementById('prev-btn').addEventListener('click', () => {
+    viewMonth--;
+    if (viewMonth < 0) { viewMonth = 11; viewYear--; }
+    buildCalendar(viewYear, viewMonth);
+  });
+  document.getElementById('next-btn').addEventListener('click', () => {
+    viewMonth++;
+    if (viewMonth > 11) { viewMonth = 0; viewYear++; }
+    buildCalendar(viewYear, viewMonth);
+  });
+  document.getElementById('today-btn').addEventListener('click', () => {
+    viewYear  = today.getFullYear();
+    viewMonth = today.getMonth();
+    buildCalendar(viewYear, viewMonth);
+  });
+
+  // Load editions.json and then render the calendar
+  fetch('./editions.json')
+    .then(r => r.json())
+    .then(all => {
+      all.forEach(e => {
+        const count = typeof e.filled === 'number' ? e.filled : 0;
+        if (e.type === 'monthly') MONTHLY_EDITIONS[e.date] = count;
+        else                      EDITIONS[e.date] = count;
+      });
+      buildCalendar(viewYear, viewMonth);
+    })
+    .catch(() => buildCalendar(viewYear, viewMonth)); // render anyway if file missing
+</script>
+
+</body>
+</html>
