@@ -44,18 +44,18 @@
   },
   {
     "type": "weekly",
-    "filled": 1,
+    "filled": 0,
     "edition": {
       "number": 2,
       "date": "March 13, 2026"
     },
     "news": [
       {
-        "tag": "test",
-        "headline": "test test test",
-        "desc": "bigger test of consistency",
+        "tag": "Models",
+        "headline": "Your story 1 headline goes here",
+        "desc": "A short 1–2 sentence summary of why this story matters and what happened.",
         "url": "https://example.com",
-        "checked": true
+        "checked": false
       },
       {
         "tag": "Research",
@@ -90,7 +90,7 @@
   },
   {
     "type": "monthly",
-    "filled": 5,
+    "filled": 0,
     "edition": {
       "number": 3,
       "date": "March 31, 2026"
@@ -101,35 +101,35 @@
         "headline": "Your story 1 headline goes here",
         "desc": "A short 1–2 sentence summary of why this story matters and what happened.",
         "url": "https://example.com",
-        "checked": true
+        "checked": false
       },
       {
         "tag": "Research",
         "headline": "Your story 2 headline goes here",
         "desc": "A short 1–2 sentence summary of why this story matters and what happened.",
         "url": "https://example.com",
-        "checked": true
+        "checked": false
       },
       {
         "tag": "Industry",
         "headline": "Your story 3 headline goes here",
         "desc": "A short 1–2 sentence summary of why this story matters and what happened.",
         "url": "https://example.com",
-        "checked": true
+        "checked": false
       },
       {
         "tag": "Policy",
         "headline": "Your story 4 headline goes here",
         "desc": "A short 1–2 sentence summary of why this story matters and what happened.",
         "url": "https://example.com",
-        "checked": true
+        "checked": false
       },
       {
         "tag": "Tools",
         "headline": "Your story 5 headline goes here",
         "desc": "A short 1–2 sentence summary of why this story matters and what happened.",
         "url": "https://example.com",
-        "checked": true
+        "checked": false
       }
     ],
     "date": "2026-03-31"
