@@ -8,8 +8,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
   <style>
     :root {
-      --ink: #e8e4dc; --paper: #0f1e35; --accent: #c0392b;
-      --muted: #7a9abf; --rule: #1e3a5f;
+      --ink: #1c1c1a; --paper: #f5f0e6; --accent: #c0392b;
+      --muted: #8a8478; --rule: #ddd8ce;
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body { background: var(--paper); color: var(--ink); font-family: 'DM Sans', sans-serif; min-height: 100vh; }
@@ -30,7 +30,7 @@
 
     /* ── Hero ── */
     .hero {
-      width: 100%; height: 360px; background: #0a1628;
+      width: 100%; height: 360px; background: #e8e3d8;
       display: flex; align-items: center; justify-content: center;
       overflow: hidden; position: relative;
     }
@@ -77,34 +77,40 @@
     .section-label {
       font-family: 'DM Mono', monospace; font-size: 0.58rem;
       letter-spacing: 0.3em; text-transform: uppercase; color: var(--accent);
-      margin: 2.5rem 0 2.25rem; display: flex; align-items: center; gap: 1rem;
+      margin: 2.5rem 0 0.1rem; display: flex; align-items: center; gap: 1rem;
     }
     .section-label::after { content: ''; flex: 1; height: 1px; background: var(--rule); }
 
     /* ── Story wrappers with edit button ── */
     .story-wrap { position: relative; }
-    .story-edit-btn {
+    .story-edit-btn, .story-check-btn {
       display: none; /* shown only in edit-mode */
-      position: absolute; top: 0; right: 0;
+      position: absolute; top: 0;
       width: 2rem; height: 2rem; background: transparent;
       border: 1px solid var(--rule); border-radius: 4px; cursor: pointer;
-      color: var(--muted); align-items: center; justify-content: center;
-      transition: color 0.15s, border-color 0.15s, transform 0.15s; z-index: 1;
+      align-items: center; justify-content: center;
+      transition: color 0.15s, border-color 0.15s, background 0.15s, transform 0.15s; z-index: 1;
     }
+    .story-edit-btn { right: 0; color: var(--muted); }
     .story-edit-btn:hover { color: var(--accent); border-color: var(--accent); transform: scale(1.1); }
-    body.edit-mode .story-edit-btn { display: flex; }
+    .story-check-btn { right: 2.4rem; color: var(--muted); font-size: 0.85rem; }
+    .story-check-btn.is-checked { background: #5fa864; border-color: #5fa864; color: #fff; }
+    .story-check-btn:hover { border-color: #5fa864; color: #5fa864; transform: scale(1.1); }
+    .story-check-btn.is-checked:hover { background: #449249; border-color: #449249; color: #fff; }
+    body.edit-mode .story-edit-btn, body.edit-mode .story-check-btn { display: flex; }
 
     /* ── Lead story ── */
     .lead-story {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 3.5rem;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 3.5rem; align-items: start;
       padding-bottom: 2.5rem; border-bottom: 1px solid var(--rule); margin-bottom: 2.5rem;
     }
+    body.edit-mode .lead-story > div:last-child { padding-right: 2.5rem; }
     .lead-num {
       font-family: 'Playfair Display', serif; font-size: 8rem; font-weight: 900;
-      line-height: 0.85; color: var(--rule); margin-bottom: 1.25rem; user-select: none;
+      line-height: 0.85; color: rgba(0,0,0,0.18); margin-bottom: 1.25rem; user-select: none;
     }
     .story-tag {
-      font-family: 'DM Mono', monospace; font-size: 0.58rem;
+      font-family: 'DM Mono', monospace; font-size: 0.68rem;
       letter-spacing: 0.25em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.5rem;
     }
     .lead-headline {
@@ -112,7 +118,7 @@
       font-weight: 700; line-height: 1.2; letter-spacing: -0.01em;
     }
     .lead-desc {
-      font-size: 1rem; line-height: 1.75; color: #a8c4e0; font-weight: 300; margin-bottom: 1.5rem;
+      font-size: 1rem; line-height: 1.75; color: #5a5650; font-weight: 300; margin-bottom: 1.5rem; margin-top: 2rem;
     }
     .read-link {
       display: inline-flex; align-items: center; gap: 0.4rem;
@@ -129,21 +135,22 @@
       display: grid; grid-template-columns: 1fr 1fr; gap: 0;
       border-bottom: 1px solid var(--rule); margin-bottom: 2.5rem;
     }
-    .story-col { position: relative; padding: 0 2.25rem 2.25rem 0; }
+    .story-col { position: relative; padding: 0 2.25rem 2.25rem 0; display: flex; flex-direction: column; }
+    .story-col > .read-link { margin-top: auto; }
     .story-col + .story-col { padding: 0 0 2.25rem 2.25rem; border-left: 1px solid var(--rule); }
     .story-num {
       font-family: 'Playfair Display', serif; font-size: 4rem; font-weight: 900;
-      line-height: 0.9; color: var(--rule); margin-bottom: 1rem; user-select: none;
+      line-height: 0.9; color: rgba(0,0,0,0.18); margin-bottom: 1rem; user-select: none;
     }
     .story-headline {
       font-family: 'Playfair Display', serif; font-size: clamp(1.1rem, 2vw, 1.45rem);
       font-weight: 700; line-height: 1.22; margin-bottom: 0.6rem;
     }
-    .story-desc { font-size: 0.9rem; line-height: 1.68; color: #a8c4e0; font-weight: 300; margin-bottom: 1rem; }
+    .story-desc { font-size: 0.9rem; line-height: 1.68; color: #5a5650; font-weight: 300; margin-bottom: 1rem; }
 
     /* ── Mid image ── */
     .mid-image {
-      width: 100%; height: 240px; background: #0a1628; border-radius: 2px;
+      width: 100%; height: 240px; background: #e8e3d8; border-radius: 2px;
       margin-bottom: 2.5rem; display: flex; align-items: center; justify-content: center;
       overflow: hidden; position: relative;
     }
@@ -160,7 +167,7 @@
     /* ── Footer ── */
     footer {
       text-align: center; padding: 2rem; font-family: 'DM Mono', monospace;
-      font-size: 0.6rem; letter-spacing: 0.15em; color: var(--rule);
+      font-size: 0.6rem; letter-spacing: 0.15em; color: var(--muted);
       text-transform: uppercase; border-top: 1px solid var(--rule);
     }
 
@@ -346,7 +353,6 @@
     document.getElementById('eyebrow').textContent       = isMonthly ? 'Monthly Recap' : 'Curated Intelligence';
     document.getElementById('edition-num').textContent   = `Vol. ${data.edition.number}`;
     document.getElementById('edition-date').textContent  = data.edition.date;
-    document.getElementById('section-label').textContent = isMonthly ? "This month's picks" : "This week's picks";
     document.title = `AI Weekly Signal — ${data.edition.date}`;
 
     const news = data.news || [];
@@ -380,6 +386,7 @@
       leadLink.href = articleUrl(0);
       leadLink.textContent = 'Read story';
       lead.querySelector('#lead-link-wrap').replaceWith(leadLink);
+      wrap.appendChild(makeCheckBtn(0));
       wrap.appendChild(btn);
       wrap.appendChild(lead);
       container.appendChild(wrap);
@@ -396,6 +403,26 @@
 
     // Stories 4 & 5
     if (news[3] || news[4]) container.appendChild(makePair(news[3], 3, '04', news[4], 4, '05'));
+  }
+
+  function makeCheckBtn(idx) {
+    const btn = document.createElement('button');
+    btn.className = 'story-check-btn' + (currentData.news[idx]?.checked ? ' is-checked' : '');
+    btn.title = 'Mark as done';
+    btn.textContent = '✓';
+    btn.addEventListener('click', () => toggleCheck(idx, btn));
+    return btn;
+  }
+
+  async function toggleCheck(idx, btn) {
+    if (!EDIT_MODE) return;
+    currentData.news[idx].checked = !currentData.news[idx].checked;
+    btn.classList.toggle('is-checked', currentData.news[idx].checked);
+    const filled = currentData.news.filter(s => s.checked).length;
+    const edIdx = allEditions.findIndex(e => e.date === DATE_KEY);
+    const entry = { ...currentData, date: DATE_KEY, type: EDITION_TYPE, filled };
+    if (edIdx >= 0) allEditions[edIdx] = entry; else allEditions.push(entry);
+    await fetch('/save', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ file:'editions.json', data: allEditions }) });
   }
 
   function makePair(a, ia, na, b, ib, nb) {
@@ -425,6 +452,7 @@
       btn.innerHTML = editPencil;
       btn.addEventListener('click', () => openStoryModal(idx));
       col.insertBefore(btn, col.firstChild);
+      col.insertBefore(makeCheckBtn(idx), col.firstChild);
       pair.appendChild(col);
     });
     return pair;
