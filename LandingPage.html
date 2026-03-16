@@ -30,7 +30,7 @@
 
     /* ── Masthead ── */
     .masthead {
-      border-bottom: 1px solid var(--rule);
+      border-bottom: none;
       padding: 1.2rem 0 0.8rem;
       text-align: center;
       background: var(--paper);
@@ -147,7 +147,7 @@
     .cal-grid {
       border: 1px solid var(--rule);
       border-radius: 2px;
-      overflow: hidden;
+      overflow: visible;
     }
 
     /* Day-of-week headers */
@@ -180,7 +180,7 @@
     /* Day cells */
     .cal-day {
       min-height: 150px;
-      padding: 0.75rem 0.7rem 2.5rem;
+      padding: 0.75rem 0.7rem 0.75rem;
       border-right: 1px solid var(--rule);
       position: relative;
       background: var(--paper);
@@ -217,7 +217,7 @@
       margin-top: 0.45rem;
       transition: transform 0.15s;
     }
-    /* Weekly dot — 6 fill states (0 = draft outline → 5 = forest green) */
+    /* Weekly button — 6 fill states (0 = draft outline → 5 = forest green) */
     a.friday-dot { cursor: pointer; text-decoration: none; position: absolute; bottom: 0.9rem; left: 0.9rem; }
     a.month-dot  { position: absolute; bottom: 0.9rem; left: 0.55rem; }
 
@@ -272,9 +272,20 @@
     a.month-dot.filled-4:hover { background: #6645b8; transform: rotate(45deg) scale(1.15); }
     a.month-dot.filled-5:hover { background: #4f2f9e; transform: rotate(45deg) scale(1.15); }
 
+    /* ── Week button ── */
+    .week-btn {
+      display: block; margin-top: 0rem;
+      background: none; border: 1px solid var(--rule); border-radius: 4px;
+      padding: 0.45rem 0.7rem; font-family: 'DM Mono', monospace; font-size: 0.7rem;
+      letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent);
+      text-decoration: none; transition: border-color 0.15s, background 0.15s;
+      text-align: center;
+    }
+    .week-btn:hover { border-color: var(--accent); background: rgba(192,57,43,0.05); }
+
     /* ── Story markers ── */
     .story-marker {
-      display: -webkit-box; margin-top: 0.3rem;
+      display: -webkit-box; margin-top: 0.5rem;
       font-family: 'DM Sans', sans-serif; font-weight: 500;
       line-height: 1.3; color: var(--ink); text-decoration: none;
       background: transparent; border-left: 2px solid var(--accent);
@@ -401,6 +412,9 @@
     }
 
     for (let w = 0; w < cells.length / 7; w++) {
+      const weekWrap = document.createElement('div');
+      weekWrap.className = 'cal-week-wrap';
+
       const weekEl = document.createElement('div');
       weekEl.className = 'cal-week';
 
@@ -419,6 +433,18 @@
         numEl.textContent = cell.day;
         dayEl.appendChild(numEl);
 
+        // Friday with an edition gets a Week button right below the date number
+        if (date.getDay() === 5) {
+          const key = editionKey(date);
+          if (EDITIONS.hasOwnProperty(key)) {
+            const wb = document.createElement('a');
+            wb.className = 'week-btn';
+            wb.href = `ReaderPage.html?date=${key}`;
+            wb.textContent = 'This Week →';
+            dayEl.appendChild(wb);
+          }
+        }
+
         // Story markers for this day
         const markers = STORY_MARKERS[editionKey(date)] || [];
         markers.forEach(m => {
@@ -429,22 +455,6 @@
           a.title = m.headline;
           dayEl.appendChild(a);
         });
-
-        // Every Friday gets a dot — green (clickable) if published, gray if not
-        if (date.getDay() === 5) {
-          const key  = editionKey(date);
-          const dateLabel = date.toLocaleDateString('en-US',
-            { month: 'long', day: 'numeric', year: 'numeric' });
-
-          const filled = EDITIONS.hasOwnProperty(key) ? EDITIONS[key] : -1;
-          const dot = document.createElement('a');
-          dot.className = `friday-dot filled-${Math.max(0, filled)}`;
-          dot.href  = `ReaderPage.html?date=${key}`;
-          dot.title = filled === 5 ? `Read edition — ${dateLabel}`
-                    : filled > 0  ? `In progress (${filled}/5) — ${dateLabel}`
-                    :               `Draft edition — ${dateLabel}`;
-          dayEl.appendChild(dot);
-        }
 
         // Last day of the month gets a purple monthly dot
         const lastDayOfMonth = new Date(cell.year, cell.month + 1, 0).getDate();

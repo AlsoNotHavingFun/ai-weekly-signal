@@ -18,7 +18,7 @@
     }
     .back-btn {
       display: inline-flex; align-items: center; gap: 0.5rem;
-      font-family: 'DM Mono', monospace; font-size: 0.72rem;
+      font-family: 'DM Mono', monospace; font-size: 0.85rem;
       letter-spacing: 0.15em; text-transform: uppercase;
       color: var(--muted); text-decoration: none; transition: color 0.15s;
     }
@@ -27,7 +27,7 @@
     .top-bar-left { display: flex; align-items: center; gap: 1.25rem; }
     .home-btn {
       display: inline-flex; align-items: center; gap: 0.5rem;
-      font-family: 'DM Mono', monospace; font-size: 0.72rem;
+      font-family: 'DM Mono', monospace; font-size: 0.85rem;
       letter-spacing: 0.15em; text-transform: uppercase;
       color: var(--muted); text-decoration: none; transition: color 0.15s;
     }
@@ -36,7 +36,7 @@
     .top-bar-right { display: flex; align-items: center; gap: 0.75rem; }
     .top-bar-meta {
       font-family: 'DM Mono', monospace; font-size: 0.6rem;
-      letter-spacing: 0.15em; text-transform: uppercase; color: var(--rule);
+      letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted);
     }
     .edit-btn {
       display: none; /* shown only in edit-mode */
@@ -100,8 +100,8 @@
     /* ── Nav ── */
     .article-nav {
       display: flex; justify-content: space-between; align-items: center;
-      padding: 1.5rem 1.75rem; border-top: 1px solid var(--rule);
-      font-family: 'DM Mono', monospace; font-size: 0.62rem;
+      padding: 2.5rem 1.75rem; border-top: 1px solid var(--rule);
+      font-family: 'DM Mono', monospace; font-size: 0.85rem;
       letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted);
     }
     .nav-link {
@@ -197,9 +197,9 @@
 </article>
 
 <nav class="article-nav">
-  <a class="nav-link prev hidden" id="prev-link" href="#">Previous</a>
+  <a class="nav-link prev hidden" id="prev-link" href="#">Previous article</a>
   <span id="nav-counter">— / 5</span>
-  <a class="nav-link next hidden" id="next-link" href="#">Next</a>
+  <a class="nav-link next hidden" id="next-link" href="#">Next article</a>
 </nav>
 
 <div class="modal-overlay" id="modal-overlay">
