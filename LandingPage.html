@@ -407,7 +407,7 @@
           const filled = EDITIONS.hasOwnProperty(key) ? EDITIONS[key] : -1;
           const dot = document.createElement('a');
           dot.className = `friday-dot filled-${Math.max(0, filled)}`;
-          dot.href  = `NewsPage.html?date=${key}`;
+          dot.href  = `ReaderPage.html?date=${key}`;
           dot.title = filled === 5 ? `Read edition — ${dateLabel}`
                     : filled > 0  ? `In progress (${filled}/5) — ${dateLabel}`
                     :               `Draft edition — ${dateLabel}`;
@@ -423,7 +423,7 @@
           const mfilled = MONTHLY_EDITIONS.hasOwnProperty(key) ? MONTHLY_EDITIONS[key] : -1;
           const mdot = document.createElement('a');
           mdot.className = `month-dot filled-${Math.max(0, mfilled)}`;
-          mdot.href  = `NewsPage.html?date=${key}&type=monthly`;
+          mdot.href  = `ReaderPage.html?date=${key}&type=monthly`;
           mdot.title = mfilled === 5 ? `Monthly recap — ${monthLabel}`
                      : mfilled > 0  ? `In progress (${mfilled}/5) — ${monthLabel}`
                      :                `Draft monthly recap — ${monthLabel}`;

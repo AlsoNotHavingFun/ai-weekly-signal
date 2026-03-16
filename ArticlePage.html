@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AI Weekly Signal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root { --ink:#0e0e0e; --paper:#f5f0e8; --accent:#c0392b; --muted:#7a7060; --rule:#d4cfc5; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--paper); color: var(--ink); font-family: 'DM Sans', sans-serif; min-height: 100vh; display: flex; flex-direction: column; }
+
+    /* ── Top bar ── */
+    .top-bar {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1.1rem 1.75rem; border-bottom: 1px solid var(--rule);
+    }
+    .back-btn {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-family: 'DM Mono', monospace; font-size: 0.72rem;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--muted); text-decoration: none; transition: color 0.15s;
+    }
+    .back-btn::before { content: '←'; }
+    .back-btn:hover { color: var(--ink); }
+    .top-bar-right { display: flex; align-items: center; gap: 0.75rem; }
+    .top-bar-meta {
+      font-family: 'DM Mono', monospace; font-size: 0.6rem;
+      letter-spacing: 0.15em; text-transform: uppercase; color: var(--rule);
+    }
+    .edit-btn {
+      display: none; /* shown only in edit-mode */
+      align-items: center; justify-content: center;
+      width: 2rem; height: 2rem; background: transparent;
+      border: 1px solid var(--rule); border-radius: 4px; cursor: pointer;
+      color: var(--muted); transition: color 0.15s, border-color 0.15s, transform 0.15s;
+    }
+    .edit-btn:hover { color: var(--accent); border-color: var(--accent); transform: scale(1.1); }
+    body.edit-mode .edit-btn { display: flex; }
+
+    /* ── Article ── */
+    .article { max-width: 680px; margin: 0 auto; padding: 5rem 1.5rem 6rem; flex: 1; }
+
+    .article-tag {
+      font-family: 'DM Mono', monospace; font-size: 0.62rem;
+      letter-spacing: 0.3em; text-transform: uppercase; color: var(--accent);
+      margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.75rem;
+    }
+    .article-tag::before {
+      content: ''; display: inline-block; width: 8px; height: 8px;
+      background: var(--accent); transform: rotate(45deg); border-radius: 1px; flex-shrink: 0;
+    }
+    .article-headline {
+      font-family: 'Playfair Display', serif; font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 900; line-height: 1.12; letter-spacing: -0.02em; margin-bottom: 2rem;
+    }
+    .article-rule { height: 1px; background: var(--rule); margin-bottom: 2rem; }
+    .article-desc {
+      font-size: 1.1rem; line-height: 1.85; color: #333; font-weight: 300; margin-bottom: 2rem;
+    }
+    .article-body {
+      font-size: 1.05rem; line-height: 1.85; color: #333;
+      font-weight: 300; margin-bottom: 2rem; white-space: pre-wrap;
+    }
+    .article-note {
+      border-left: 3px solid var(--rule); padding: 0.75rem 1.25rem; margin-bottom: 2rem;
+    }
+    .note-label {
+      font-family: 'DM Mono', monospace; font-size: 0.55rem; letter-spacing: 0.25em;
+      text-transform: uppercase; color: var(--rule); margin-bottom: 0.6rem;
+    }
+    .note-line {
+      font-size: 0.88rem; line-height: 1.6; color: var(--muted);
+      padding: 0.3rem 0; border-bottom: 1px solid var(--rule);
+    }
+    .note-line:last-child { border-bottom: none; }
+    .article-cta {
+      display: inline-flex; align-items: center; gap: 0.75rem;
+      background: var(--ink); color: var(--paper); text-decoration: none;
+      font-family: 'DM Mono', monospace; font-size: 0.72rem; letter-spacing: 0.18em;
+      text-transform: uppercase; padding: 1rem 2rem; border-radius: 4px; transition: background 0.15s;
+    }
+    .article-cta:hover { background: var(--accent); }
+    .article-cta::after { content: '→'; font-size: 1rem; }
+    .no-link-note {
+      font-family: 'DM Mono', monospace; font-size: 0.65rem;
+      letter-spacing: 0.12em; color: var(--rule); text-transform: uppercase;
+    }
+
+    /* ── Nav ── */
+    .article-nav {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1.5rem 1.75rem; border-top: 1px solid var(--rule);
+      font-family: 'DM Mono', monospace; font-size: 0.62rem;
+      letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted);
+    }
+    .nav-link {
+      color: var(--muted); text-decoration: none; transition: color 0.15s;
+      display: flex; align-items: center; gap: 0.4rem;
+    }
+    .nav-link:hover { color: var(--ink); }
+    .nav-link.prev::before { content: '←'; }
+    .nav-link.next::after  { content: '→'; }
+    .nav-link.hidden { visibility: hidden; }
+
+    /* ── Modal ── */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(14,14,14,0.5); backdrop-filter: blur(2px);
+      z-index: 100; align-items: center; justify-content: center; padding: 1.5rem;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: var(--paper); border: 1px solid var(--rule); border-radius: 6px;
+      width: 100%; max-width: 500px; max-height: 88vh; display: flex; flex-direction: column;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.15); animation: modal-in 0.18s ease;
+    }
+    @keyframes modal-in { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+    .modal-header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1.4rem 1.5rem 1rem; border-bottom: 1px solid var(--rule); flex-shrink: 0;
+    }
+    .modal-title { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 700; }
+    .modal-subtitle {
+      font-family: 'DM Mono', monospace; font-size: 0.6rem;
+      letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-top: 0.2rem;
+    }
+    .modal-close {
+      background: none; border: none; font-size: 1.4rem; color: var(--muted);
+      cursor: pointer; padding: 0.2rem 0.4rem; border-radius: 3px;
+      transition: color 0.15s, background 0.15s; line-height: 1;
+    }
+    .modal-close:hover { color: var(--ink); background: var(--rule); }
+    .modal-body { overflow-y: auto; padding: 1.5rem; flex: 1; display: flex; flex-direction: column; gap: 1.2rem; }
+    .field-group { display: flex; flex-direction: column; gap: 0.35rem; }
+    .field-label {
+      font-family: 'DM Mono', monospace; font-size: 0.58rem;
+      letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted);
+    }
+    .field-input, .field-textarea {
+      width: 100%; background: transparent; border: none;
+      border-bottom: 1px solid var(--rule); padding: 0.4rem 0;
+      font-family: 'DM Sans', sans-serif; font-size: 0.95rem;
+      color: var(--ink); outline: none; transition: border-color 0.15s;
+    }
+    .field-input:focus, .field-textarea:focus { border-bottom-color: var(--ink); }
+    .field-textarea { resize: vertical; min-height: 80px; }
+    .modal-footer {
+      display: flex; justify-content: flex-end; align-items: center; gap: 1rem;
+      padding: 1rem 1.5rem 1.4rem; border-top: 1px solid var(--rule); flex-shrink: 0;
+    }
+    .save-msg {
+      font-family: 'DM Mono', monospace; font-size: 0.62rem;
+      letter-spacing: 0.1em; color: #5a9e5a; opacity: 0; transition: opacity 0.3s;
+    }
+    .save-msg.visible { opacity: 1; }
+    .save-btn {
+      background: var(--ink); color: var(--paper); border: none; border-radius: 4px;
+      padding: 0.6rem 1.5rem; font-family: 'DM Mono', monospace; font-size: 0.68rem;
+      letter-spacing: 0.15em; text-transform: uppercase; cursor: pointer; transition: background 0.15s;
+    }
+    .save-btn:hover { background: var(--accent); }
+    .save-btn:disabled { opacity: 0.5; cursor: default; }
+  </style>
+</head>
+<body>
+
+<div class="top-bar">
+  <a class="back-btn" id="back-btn" href="LandingPage.html">Edition</a>
+  <div class="top-bar-right">
+    <span class="top-bar-meta" id="top-meta">—</span>
+    <button class="edit-btn" id="edit-btn" title="Edit this story">
+      <svg width="12" height="12" viewBox="0 0 15 15" fill="none"><path d="M10.5 1.5L13.5 4.5L4.5 13.5H1.5V10.5L10.5 1.5Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M8.5 3.5L11.5 6.5" stroke="currentColor" stroke-width="1.5"/></svg>
+    </button>
+  </div>
+</div>
+
+<article class="article">
+  <div class="article-tag" id="tag"></div>
+  <h1 class="article-headline" id="headline">—</h1>
+  <div class="article-rule"></div>
+  <div id="note-wrap"></div>
+  <div id="cta-wrap"></div>
+</article>
+
+<nav class="article-nav">
+  <a class="nav-link prev hidden" id="prev-link" href="#">Previous</a>
+  <span id="nav-counter">— / 5</span>
+  <a class="nav-link next hidden" id="next-link" href="#">Next</a>
+</nav>
+
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title" id="modal-title">Edit Story</div>
+        <div class="modal-subtitle" id="modal-subtitle"></div>
+      </div>
+      <button class="modal-close" id="modal-close">&#x2715;</button>
+    </div>
+    <div class="modal-body">
+      <div class="field-group">
+        <label class="field-label">Title</label>
+        <input class="field-input" id="f-headline" type="text">
+      </div>
+      <div class="field-group">
+        <label class="field-label">Article</label>
+        <textarea class="field-textarea" id="f-body" style="min-height:160px" placeholder="Write your full article here…"></textarea>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Notes &amp; Sources</label>
+        <textarea class="field-textarea" id="f-note" style="min-height:80px" placeholder="Extra context, sources, links…"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <span class="save-msg" id="save-msg">Saved ✓</span>
+      <button class="save-btn" id="save-btn">Save</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const params    = new URLSearchParams(location.search);
+  const DATE_KEY  = params.get('date') || (() => {
+    const d = new Date(); d.setHours(0,0,0,0);
+    const day = d.getDay(); d.setDate(d.getDate() - (day + 2) % 7);
+    const pad = n => String(n).padStart(2,'0');
+    return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+  })();
+  const STORY_IDX = parseInt(params.get('idx') || '0', 10);
+  const TYPE      = params.get('type') || 'weekly';
+  const EDIT_MODE = location.hostname === 'localhost' || location.hostname === '127.0.0.1'
+                 || params.get('edit') === '1';
+
+  if (EDIT_MODE) document.body.classList.add('edit-mode');
+
+  let allEditions = [];
+
+  function storyUrl(idx) { return `ArticlePage.html?date=${DATE_KEY}&idx=${idx}${TYPE==='monthly'?'&type=monthly':''}`; }
+  function readerUrl()   { return `ReaderPage.html?date=${DATE_KEY}${TYPE==='monthly'?'&type=monthly':''}`; }
+
+  document.getElementById('back-btn').href = readerUrl();
+
+  function closeModal() { document.getElementById('modal-overlay').classList.remove('open'); }
+  document.getElementById('modal-close').addEventListener('click', closeModal);
+  document.getElementById('modal-overlay').addEventListener('click', e => { if (e.target === e.currentTarget) closeModal(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+  document.getElementById('edit-btn').addEventListener('click', () => {
+    const edition = allEditions.find(e => e.date === DATE_KEY);
+    if (!edition) return;
+    const story = edition.news[STORY_IDX];
+    document.getElementById('modal-subtitle').textContent = `Story ${STORY_IDX + 1}`;
+    document.getElementById('f-headline').value = story.headline || '';
+    document.getElementById('f-body').value     = story.body     || '';
+    document.getElementById('f-note').value     = story.note     || '';
+    document.getElementById('save-msg').classList.remove('visible');
+    document.getElementById('save-btn').disabled = false;
+    document.getElementById('modal-overlay').classList.add('open');
+    setTimeout(() => document.getElementById('f-headline').focus(), 50);
+  });
+
+  document.getElementById('save-btn').addEventListener('click', async () => {
+    const btn = document.getElementById('save-btn');
+    const msg = document.getElementById('save-msg');
+    btn.disabled = true;
+
+    const edition = allEditions.find(e => e.date === DATE_KEY);
+    if (!edition) { btn.disabled = false; return; }
+
+    edition.news[STORY_IDX].headline = document.getElementById('f-headline').value.trim();
+    edition.news[STORY_IDX].body     = document.getElementById('f-body').value.trim();
+    edition.news[STORY_IDX].note     = document.getElementById('f-note').value.trim();
+
+    try {
+      const res  = await fetch('/save', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ file:'editions.json', data: allEditions }) });
+      const json = await res.json();
+      if (!json.ok) throw new Error(json.error);
+      renderStory(edition.news[STORY_IDX]);
+      msg.classList.add('visible');
+      setTimeout(() => { msg.classList.remove('visible'); closeModal(); }, 1000);
+    } catch(e) {
+      alert('Could not save: ' + e.message);
+      btn.disabled = false;
+    }
+  });
+
+  function renderStory(story) {
+    document.title = story.headline + ' — AI Weekly Signal';
+    document.getElementById('tag').textContent       = story.tag;
+    document.getElementById('headline').textContent  = story.headline;
+
+    const noteWrap = document.getElementById('note-wrap');
+    const bodyHtml = story.body ? `<div class="article-body">${story.body.replace(/\n/g,'<br>')}</div>` : '';
+    const noteLines = story.note ? story.note.split('\n').filter(l => l.trim()) : [];
+    const noteHtml = noteLines.length ? `
+      <aside class="article-note">
+        <div class="note-label">Notes &amp; Sources</div>
+        ${noteLines.map(l => `<div class="note-line">${l}</div>`).join('')}
+      </aside>` : '';
+    noteWrap.innerHTML = bodyHtml + noteHtml;
+
+    const cta = document.getElementById('cta-wrap');
+    cta.innerHTML = (story.url && story.url !== 'https://example.com')
+      ? `<a class="article-cta" href="${story.url}" target="_blank" rel="noopener noreferrer">Read full article</a>`
+      : `<span class="no-link-note">No external link for this story</span>`;
+  }
+
+  fetch('./editions.json')
+    .then(r => r.json())
+    .then(all => {
+      allEditions = all;
+      const edition = all.find(e => e.date === DATE_KEY);
+      if (!edition) {
+        const blanks = Array.from({length:5},(_,i)=>({
+          tag:['Models','Research','Industry','Policy','Tools'][i],
+          headline:`Story ${i+1} headline goes here`,
+          desc:'A short summary of why this story matters.',
+          url:'https://example.com'
+        }));
+        edition = { date: DATE_KEY, type: TYPE, filled: 0,
+          edition: { number: all.length + 1, date: new Date(DATE_KEY+'T12:00:00').toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}) },
+          news: blanks };
+      }
+
+      const story = edition.news[STORY_IDX];
+      if (!story) { document.getElementById('headline').textContent = 'Story not found.'; return; }
+
+      document.getElementById('top-meta').textContent = `${edition.edition.date} ◆ Story ${STORY_IDX + 1} of 5`;
+      renderStory(story);
+
+      const prevEl = document.getElementById('prev-link');
+      const nextEl = document.getElementById('next-link');
+      document.getElementById('nav-counter').textContent = `${STORY_IDX + 1} / 5`;
+      if (STORY_IDX > 0) { prevEl.href = storyUrl(STORY_IDX - 1); prevEl.classList.remove('hidden'); }
+      if (STORY_IDX < edition.news.length - 1) { nextEl.href = storyUrl(STORY_IDX + 1); nextEl.classList.remove('hidden'); }
+    })
+    .catch(() => { document.getElementById('headline').textContent = 'Could not load edition.'; });
+</script>
+
+</body>
+</html>
