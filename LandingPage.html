@@ -120,6 +120,15 @@
       transition: border-color 0.15s, background 0.15s;
     }
     .cal-today-btn:hover { border-color: var(--accent); background: rgba(192,57,43,0.05); }
+    .monthly-view-btn {
+      border: 1px solid var(--rule); border-radius: 4px;
+      padding: 0.45rem 1.1rem; font-family: 'DM Mono', monospace;
+      font-size: 0.85rem; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--ink); text-decoration: none; white-space: nowrap;
+      flex: 1; text-align: center; margin: 0 1.25rem;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .monthly-view-btn:hover { border-color: var(--ink); background: rgba(0,0,0,0.03); }
 
     .cal-view-wrap {
       display: flex;
@@ -379,6 +388,7 @@
       <span class="cal-month-label" id="month-label"></span>
       <button class="cal-today-btn" id="today-btn">Today</button>
     </div>
+    <a class="monthly-view-btn" id="monthly-view-btn" href="MonthlyPage.html?month=2026-03">View the full month of March</a>
     <!-- Right: view selector -->
     <div class="cal-view-wrap">
       View by
@@ -580,21 +590,34 @@
     arrow.textContent = open ? '▴' : '▾';
   });
 
+  const MONTH_NAMES = ['January','February','March','April','May','June',
+                       'July','August','September','October','November','December'];
+  function updateMonthlyBtn() {
+    const btn = document.getElementById('monthly-view-btn');
+    const mm  = String(viewMonth + 1).padStart(2, '0');
+    btn.href = `MonthlyPage.html?month=${viewYear}-${mm}`;
+    btn.textContent = `View the full month of ${MONTH_NAMES[viewMonth]}`;
+  }
+
   document.getElementById('prev-btn').addEventListener('click', () => {
     viewMonth--;
     if (viewMonth < 0) { viewMonth = 11; viewYear--; }
     buildCalendar(viewYear, viewMonth);
+    updateMonthlyBtn();
   });
   document.getElementById('next-btn').addEventListener('click', () => {
     viewMonth++;
     if (viewMonth > 11) { viewMonth = 0; viewYear++; }
     buildCalendar(viewYear, viewMonth);
+    updateMonthlyBtn();
   });
   document.getElementById('today-btn').addEventListener('click', () => {
     viewYear  = today.getFullYear();
     viewMonth = today.getMonth();
     buildCalendar(viewYear, viewMonth);
+    updateMonthlyBtn();
   });
+  updateMonthlyBtn();
 
   // Load editions.json and then render the calendar
   fetch('./editions.json')

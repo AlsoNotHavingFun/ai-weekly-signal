@@ -178,6 +178,7 @@
 <div class="top-bar">
   <div class="top-bar-left">
     <a class="home-btn" href="LandingPage.html">Calendar</a>
+    <a class="back-btn" id="month-btn" href="MonthlyPage.html">View month</a>
     <a class="back-btn" id="back-btn" href="LandingPage.html">Edition</a>
   </div>
   <div class="top-bar-right">
@@ -253,6 +254,7 @@
   function readerUrl()   { return `ReaderPage.html?date=${DATE_KEY}${TYPE==='monthly'?'&type=monthly':''}`; }
 
   document.getElementById('back-btn').href = readerUrl();
+  document.getElementById('month-btn').href = `MonthlyPage.html?month=${DATE_KEY.slice(0,7)}`;
 
   function closeModal() { document.getElementById('modal-overlay').classList.remove('open'); }
   document.getElementById('modal-close').addEventListener('click', closeModal);
