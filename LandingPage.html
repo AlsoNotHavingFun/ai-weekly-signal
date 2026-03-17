@@ -282,6 +282,8 @@
       text-align: center;
     }
     .week-btn:hover { border-color: var(--accent); background: rgba(192,57,43,0.05); }
+    .week-btn-draft { border-style: dashed; color: var(--muted); }
+    .week-btn-draft:hover { border-color: var(--muted); background: none; color: var(--muted); }
 
     /* ── Story markers ── */
     .story-marker {
@@ -368,8 +370,24 @@
   let MONTHLY_EDITIONS = {}; // monthly: "YYYY-MM-DD" → filled count (0–5)
   let STORY_MARKERS = {};    // "YYYY-MM-DD" → [{headline, url}]
 
+  const EDIT_MODE = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+
   const today = new Date();
   today.setHours(0, 0, 0, 0);
+
+  // Compute the next 2 upcoming Fridays (for edit-mode draft buttons)
+  function nextNFridays(n) {
+    const fridays = [];
+    const d = new Date(today);
+    // start from tomorrow so today counts as "upcoming" only if it's Friday
+    if (d.getDay() !== 5) d.setDate(d.getDate() + ((5 - d.getDay() + 7) % 7));
+    else d.setDate(d.getDate()); // today is Friday, include it
+    for (let i = 0; i < n; i++) {
+      fridays.push(editionKey(d));
+      d.setDate(d.getDate() + 7);
+    }
+    return new Set(fridays);
+  }
 
   let viewYear  = today.getFullYear();
   let viewMonth = today.getMonth();
@@ -433,12 +451,14 @@
         numEl.textContent = cell.day;
         dayEl.appendChild(numEl);
 
-        // Friday with an edition gets a Week button right below the date number
+        // Friday with an edition (or upcoming draft in edit mode) gets a Week button
         if (date.getDay() === 5) {
           const key = editionKey(date);
-          if (EDITIONS.hasOwnProperty(key)) {
+          const upcomingFridays = EDIT_MODE ? nextNFridays(2) : new Set();
+          const showBtn = EDITIONS.hasOwnProperty(key) || upcomingFridays.has(key);
+          if (showBtn) {
             const wb = document.createElement('a');
-            wb.className = 'week-btn';
+            wb.className = 'week-btn' + (!EDITIONS.hasOwnProperty(key) ? ' week-btn-draft' : '');
             wb.href = `ReaderPage.html?date=${key}`;
             wb.textContent = 'This Week →';
             dayEl.appendChild(wb);
