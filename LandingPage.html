@@ -96,19 +96,16 @@
     /* ── Filter panel ── */
     .filter-panel { width: 155px; position: sticky; top: 1rem; }
     .filter-toggle {
-      width: 100%; background: none; border: 1px solid var(--rule); border-radius: 4px;
-      padding: 0.5rem 0.8rem; font-family: 'DM Mono', monospace; font-size: 0.68rem;
-      letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink); cursor: pointer;
+      width: 100%; background: none; border: 1px solid var(--rule); border-radius: 4px 4px 0 0;
+      border-bottom: 1px solid var(--rule); padding: 0.5rem 0.8rem; font-family: 'DM Mono', monospace; font-size: 0.68rem;
+      letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted);
       display: flex; justify-content: space-between; align-items: center;
-      transition: border-color 0.15s;
     }
-    .filter-toggle:hover { border-color: var(--ink); }
     .filter-dropdown {
-      display: none; flex-direction: column;
+      display: flex; flex-direction: column;
       border: 1px solid var(--rule); border-top: none;
       border-radius: 0 0 4px 4px; background: var(--paper);
     }
-    .filter-dropdown.open { display: flex; }
     .filter-item {
       background: none; border: none; border-bottom: 1px solid var(--rule);
       padding: 0.55rem 0.8rem; font-family: 'DM Sans', sans-serif; font-size: 0.8rem;
@@ -119,7 +116,7 @@
     .filter-item:hover { font-weight: 700; color: var(--ink); transform: translateX(3px); }
     .filter-item.active { font-weight: 700; color: var(--accent); }
     .filter-clear {
-      background: none; border: none; border-top: 1px solid var(--rule);
+      background: none; border: none;
       padding: 0.45rem 0.8rem; font-family: 'DM Mono', monospace; font-size: 0.6rem;
       letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted);
       cursor: pointer; text-align: center; width: 100%; transition: color 0.12s;
@@ -320,7 +317,7 @@
 <main class="content">
   <div class="left-gutter">
     <div class="filter-panel" id="filter-panel">
-      <button class="filter-toggle" id="filter-toggle">Sectors <span id="filter-arrow">▾</span></button>
+      <div class="filter-toggle" style="cursor:default;">Sectors</div>
       <div class="filter-dropdown" id="filter-dropdown"></div>
     </div>
   </div>
@@ -482,14 +479,7 @@
     });
   }
 
-  document.getElementById('filter-toggle').addEventListener('click', () => {
-    const dd = document.getElementById('filter-dropdown');
-    const arrow = document.getElementById('filter-arrow');
-    const open = dd.classList.toggle('open');
-    arrow.textContent = open ? '▴' : '▾';
-  });
-
-  let allEditionsCache = null;
+let allEditionsCache = null;
 
   function loadAndRender() {
     const monthName = MONTH_NAMES[viewMonth];
