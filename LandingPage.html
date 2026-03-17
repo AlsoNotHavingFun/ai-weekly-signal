@@ -31,39 +31,17 @@
     /* ── Masthead ── */
     .masthead {
       border-bottom: none;
-      padding: 1.2rem 0 0.8rem;
+      padding: 1.5rem 0 0.8rem;
       text-align: center;
       background: var(--paper);
     }
-    .masthead-eyebrow {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.9rem;
-      letter-spacing: 0.25em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 0.5rem;
-    }
     .masthead-title {
       font-family: 'Playfair Display', serif;
-      font-size: clamp(2.5rem, 5vw, 5.5rem);
+      font-size: clamp(2.5rem, 6vw, 5.5rem);
       font-weight: 900;
       line-height: 0.95;
       letter-spacing: -0.02em;
       color: var(--ink);
-    }
-    .masthead-title span { color: var(--accent); }
-    .masthead-desc {
-      margin: 1.4rem 0 1.8rem; font-family: 'DM Sans', sans-serif;
-      font-size: 1rem; color: var(--ink); font-weight: 300; letter-spacing: 0.01em;
-    }
-    .masthead-desc strong { font-weight: 700; }
-    .masthead-subtitle {
-      margin-top: 1.2rem;
-      font-family: 'DM Mono', monospace;
-      font-size: 0.9rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--muted);
     }
 
     /* ── Calendar wrapper ── */
@@ -124,11 +102,11 @@
       border: 1px solid var(--rule); border-radius: 4px;
       padding: 0.45rem 1.1rem; font-family: 'DM Mono', monospace;
       font-size: 0.85rem; letter-spacing: 0.1em; text-transform: uppercase;
-      color: var(--ink); text-decoration: none; white-space: nowrap;
+      color: var(--ink); background: none; text-decoration: none; white-space: nowrap; font-weight: 500;
       flex: 1; text-align: center; margin: 0 1.25rem;
-      transition: border-color 0.15s, background 0.15s;
+      transition: background 0.15s;
     }
-    .monthly-view-btn:hover { border-color: var(--ink); background: rgba(0,0,0,0.03); }
+    .monthly-view-btn:hover { background: rgba(192,57,43,0.06); }
 
     .cal-view-wrap {
       display: flex;
@@ -216,70 +194,6 @@
       padding-bottom: 1px;
     }
 
-    /* ── Friday diamond ── */
-    .friday-dot {
-      display: inline-block;
-      width: 13px;
-      height: 13px;
-      border-radius: 2px;
-      transform: rotate(45deg);
-      margin-top: 0.45rem;
-      transition: transform 0.15s;
-    }
-    /* Weekly button — 6 fill states (0 = draft outline → 5 = forest green) */
-    a.friday-dot { cursor: pointer; text-decoration: none; position: absolute; bottom: 0.9rem; left: 0.9rem; }
-    a.month-dot  { position: absolute; bottom: 0.9rem; left: 0.55rem; }
-
-    a.friday-dot.filled-0 { background: transparent; border: 1.5px solid var(--rule); box-sizing: border-box; }
-    a.friday-dot.filled-1 { background: #a8d4aa; }
-    a.friday-dot.filled-2 { background: #82be86; }
-    a.friday-dot.filled-3 { background: #5fa864; }
-    a.friday-dot.filled-4 { background: #449249; }
-    a.friday-dot.filled-5 { background: #317d36; }
-
-    a.friday-dot.filled-0:hover { border-color: var(--green); transform: rotate(45deg) scale(1.15); }
-    a.friday-dot.filled-1:hover { background: #92c895; transform: rotate(45deg) scale(1.15); }
-    a.friday-dot.filled-2:hover { background: #6cb270; transform: rotate(45deg) scale(1.15); }
-    a.friday-dot.filled-3:hover { background: #4d9652; transform: rotate(45deg) scale(1.15); }
-    a.friday-dot.filled-4:hover { background: #37813c; transform: rotate(45deg) scale(1.15); }
-    a.friday-dot.filled-5:hover { background: #256b2a; transform: rotate(45deg) scale(1.15); }
-
-    /* ── Monthly diamond ── */
-    .month-dot {
-      display: inline-block;
-      width: 13px;
-      height: 13px;
-      border-radius: 2px;
-      transform: rotate(45deg);
-      margin-top: 0.45rem;
-      margin-left: 0.35rem;
-      transition: transform 0.15s;
-    }
-    a.month-dot {
-      background: var(--purple);
-      cursor: pointer;
-      text-decoration: none;
-    }
-    a.month-dot:hover {
-      background: var(--purple-hover);
-      transform: rotate(45deg) scale(1.15);
-    }
-    /* Monthly dot — same 6-state system but purple */
-    a.month-dot { cursor: pointer; text-decoration: none; }
-
-    a.month-dot.filled-0 { background: transparent; border: 1.5px solid var(--rule); box-sizing: border-box; }
-    a.month-dot.filled-1 { background: #c4aff0; }
-    a.month-dot.filled-2 { background: #a98de3; }
-    a.month-dot.filled-3 { background: #8f6dd5; }
-    a.month-dot.filled-4 { background: #7551c4; }
-    a.month-dot.filled-5 { background: #5e3aaf; }
-
-    a.month-dot.filled-0:hover { border-color: var(--purple); transform: rotate(45deg) scale(1.15); }
-    a.month-dot.filled-1:hover { background: #b49de8; transform: rotate(45deg) scale(1.15); }
-    a.month-dot.filled-2:hover { background: #9a7cd9; transform: rotate(45deg) scale(1.15); }
-    a.month-dot.filled-3:hover { background: #7f5ec9; transform: rotate(45deg) scale(1.15); }
-    a.month-dot.filled-4:hover { background: #6645b8; transform: rotate(45deg) scale(1.15); }
-    a.month-dot.filled-5:hover { background: #4f2f9e; transform: rotate(45deg) scale(1.15); }
 
     /* ── Week bar (spans full week width) ── */
     .week-bar {
@@ -372,9 +286,7 @@
 
 <!-- ── Masthead ── -->
 <header class="masthead">
-  <div class="masthead-eyebrow">Curated Intelligence</div>
-  <div class="masthead-title">AI Weekly <span>Signal</span></div>
-  <div class="masthead-desc">Welcome to your <strong>weekly news page on AI</strong> in the 5 largest industries</div>
+  <div class="masthead-title" id="cal-month-title">March 2026</div>
 </header>
 
 <!-- ── Calendar ── -->
@@ -423,7 +335,6 @@
 
 <script>
   let EDITIONS = {};         // weekly:  "YYYY-MM-DD" → filled count (0–5)
-  let MONTHLY_EDITIONS = {}; // monthly: "YYYY-MM-DD" → filled count (0–5)
   let STORY_MARKERS = {};    // "YYYY-MM-DD" → [{headline, url, tag}]
   let ALL_TAGS = [];         // ordered list of unique sector tags
   let activeFilter = null;
@@ -471,8 +382,11 @@
     return new Set(fridays);
   }
 
-  let viewYear  = today.getFullYear();
-  let viewMonth = today.getMonth();
+  const calParams = new URLSearchParams(location.search);
+  const calMonthParam = calParams.get('month') || '';
+  const [calYearStr, calMonthStr] = calMonthParam.split('-');
+  let viewYear  = parseInt(calYearStr)  || today.getFullYear();
+  let viewMonth = calMonthParam ? (parseInt(calMonthStr) - 1) : today.getMonth();
 
   // Convert EDITIONS keys to comparable timestamps
   function editionKey(date) {
@@ -553,21 +467,6 @@
           dayEl.appendChild(a);
         });
 
-        // Last day of the month gets a purple monthly dot
-        const lastDayOfMonth = new Date(cell.year, cell.month + 1, 0).getDate();
-        if (cell.thisMonth && cell.day === lastDayOfMonth) {
-          const key = editionKey(date);
-          const monthLabel = date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
-
-          const mfilled = MONTHLY_EDITIONS.hasOwnProperty(key) ? MONTHLY_EDITIONS[key] : -1;
-          const mdot = document.createElement('a');
-          mdot.className = `month-dot filled-${Math.max(0, mfilled)}`;
-          mdot.href  = `ReaderPage.html?date=${key}&type=monthly`;
-          mdot.title = mfilled === 5 ? `Monthly recap — ${monthLabel}`
-                     : mfilled > 0  ? `In progress (${mfilled}/5) — ${monthLabel}`
-                     :                `Draft monthly recap — ${monthLabel}`;
-          dayEl.appendChild(mdot);
-        }
 
         weekEl.appendChild(dayEl);
       }
@@ -597,6 +496,7 @@
     const mm  = String(viewMonth + 1).padStart(2, '0');
     btn.href = `MonthlyPage.html?month=${viewYear}-${mm}`;
     btn.textContent = `View the full month of ${MONTH_NAMES[viewMonth]}`;
+    document.getElementById('cal-month-title').textContent = `${MONTH_NAMES[viewMonth]} ${viewYear}`;
   }
 
   document.getElementById('prev-btn').addEventListener('click', () => {
@@ -626,8 +526,7 @@
       const tagSet = new Set();
       all.forEach(e => {
         const count = typeof e.filled === 'number' ? e.filled : 0;
-        if (e.type === 'monthly') MONTHLY_EDITIONS[e.date] = count;
-        else                      EDITIONS[e.date] = count;
+        if (e.type !== 'monthly') EDITIONS[e.date] = count;
         (e.news || []).forEach((story, idx) => {
           if (story.tag) tagSet.add(story.tag);
           if (!story.news_date) return;

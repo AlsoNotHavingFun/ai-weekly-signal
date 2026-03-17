@@ -23,51 +23,62 @@
       min-height: 100vh;
     }
 
-    /* ── Top bar ── */
-    .top-bar {
-      display: flex;
-      align-items: center;
-      padding: 0.75rem 2.5rem;
-      border-bottom: 1px solid var(--rule);
-    }
-    .back-btn {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.85rem;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--muted);
-      text-decoration: none;
-      transition: color 0.15s;
-    }
-    .back-btn:hover { color: var(--ink); }
-
     /* ── Masthead ── */
     .masthead {
       text-align: center;
       padding: 2rem 0 1.5rem;
+      border-bottom: 1px solid var(--rule);
     }
+    .masthead-eyebrow {
+      font-family: 'DM Mono', monospace; font-size: 0.9rem;
+      letter-spacing: 0.25em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 0.5rem;
+    }
+    .masthead-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.5rem, 6vw, 5.5rem);
+      font-weight: 900; line-height: 0.95;
+      letter-spacing: -0.02em; color: var(--ink);
+    }
+    .masthead-title span { color: var(--accent); }
+    .masthead-desc {
+      margin: 1.4rem 0 0; font-family: 'DM Sans', sans-serif;
+      font-size: 1rem; color: var(--ink); font-weight: 300;
+    }
+    .masthead-desc strong { font-weight: 700; }
+
+    /* ── Month toolbar ── */
+    .month-toolbar {
+      display: flex; align-items: center; justify-content: space-between;
+      width: 90%; margin: 1.5rem auto 0; padding-bottom: 1.5rem;
+    }
+    .month-nav { display: flex; align-items: center; gap: 0.9rem; }
+    .month-nav-btn {
+      background: none; border: 1px solid var(--rule); border-radius: 4px;
+      width: 2.8rem; height: 2.8rem; cursor: pointer; font-size: 1.2rem;
+      color: var(--ink); display: flex; align-items: center; justify-content: center;
+      transition: border-color 0.15s;
+    }
+    .month-nav-btn:hover { border-color: var(--ink); }
+    .month-label {
+      font-family: 'Playfair Display', serif; font-size: 2rem;
+      font-weight: 700; letter-spacing: -0.01em;
+    }
+    .month-today-btn {
+      background: none; border: 1px solid var(--rule); border-radius: 4px;
+      padding: 0.45rem 1.1rem; font-family: 'DM Mono', monospace;
+      font-size: 0.85rem; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--accent); cursor: pointer; transition: border-color 0.15s, background 0.15s;
+    }
+    .month-today-btn:hover { border-color: var(--accent); background: rgba(192,57,43,0.05); }
     .view-cal-btn {
-      display: inline-block;
-      font-family: 'DM Mono', monospace;
-      font-size: 0.68rem;
-      letter-spacing: 0.5em;
-      text-transform: uppercase;
-      color: var(--accent);
-      border: 1px solid var(--accent);
-      border-radius: 4px;
-      padding: 0.45rem 1.2rem;
-      text-decoration: none;
-      margin-bottom: 1rem;
+      display: inline-block; font-family: 'DM Mono', monospace;
+      font-size: 0.68rem; letter-spacing: 0.5em; text-transform: uppercase;
+      color: var(--accent); border: 1px solid var(--accent); border-radius: 4px;
+      padding: 0.45rem 1.2rem; text-decoration: none;
       transition: background 0.15s;
     }
     .view-cal-btn:hover { background: rgba(192,57,43,0.06); }
-    .month-title {
-      font-family: 'Playfair Display', serif;
-      font-size: clamp(2rem, 5vw, 4rem);
-      font-weight: 900;
-      letter-spacing: -0.02em;
-      color: var(--ink);
-    }
 
     /* ── Content layout ── */
     .content {
@@ -144,16 +155,19 @@
       font-size: 0.72rem;
       letter-spacing: 0.2em;
       text-transform: uppercase;
-      color: var(--muted);
+      color: var(--accent);
       writing-mode: vertical-lr;
-      padding-left: 0.55rem;
+      padding: 0.6rem 0.45rem;
+      margin-left: 0.55rem;
       display: flex;
       align-items: center;
       justify-content: center;
       text-decoration: none;
-      transition: color 0.15s;
+      border: 1px solid var(--accent);
+      border-radius: 4px;
+      transition: background 0.15s;
     }
-    .week-label:hover { color: var(--accent); }
+    .week-label:hover { background: rgba(192,57,43,0.06); }
 
     /* ── Row of 3 ── */
     .row-three {
@@ -280,16 +294,23 @@
 </head>
 <body>
 
-<!-- ── Top bar ── -->
-<div class="top-bar">
-  <a class="back-btn" href="LandingPage.html">&#8592; Calendar</a>
-</div>
-
 <!-- ── Masthead ── -->
 <header class="masthead">
-  <a class="view-cal-btn" id="top-cal-btn" href="LandingPage.html">View month as calendar</a>
-  <div class="month-title" id="month-title"></div>
+  <div class="masthead-eyebrow">Curated Intelligence</div>
+  <div class="masthead-title">AI Weekly <span>Signal</span></div>
+  <div class="masthead-desc">Welcome to your <strong>weekly news page on AI</strong> in the 5 largest industries</div>
 </header>
+
+<!-- ── Month toolbar ── -->
+<div class="month-toolbar">
+  <div class="month-nav">
+    <button class="month-nav-btn" id="prev-btn">&#8249;</button>
+    <button class="month-nav-btn" id="next-btn">&#8250;</button>
+    <span class="month-label" id="month-label"></span>
+    <button class="month-today-btn" id="today-btn">Today</button>
+  </div>
+  <a class="view-cal-btn" id="top-cal-btn" href="LandingPage.html">View month as calendar</a>
+</div>
 
 <!-- ── Weeks ── -->
 <main class="content">
@@ -306,7 +327,7 @@
 
 <!-- ── Bottom bar ── -->
 <div class="bottom-bar">
-  <a class="view-cal-btn" href="LandingPage.html">View month as calendar</a>
+  <a class="view-cal-btn" id="bottom-cal-btn" href="LandingPage.html">View month as calendar</a>
 </div>
 
 <footer>AI Weekly Signal &nbsp;◆&nbsp; Created by Matteo Di Rito with Claude on AI</footer>
@@ -315,15 +336,36 @@
   const MONTH_NAMES = ['January','February','March','April','May','June',
                        'July','August','September','October','November','December'];
 
+  const todayDate = new Date();
   const params    = new URLSearchParams(location.search);
   const monthParam = params.get('month') || '';
   const [yearStr, monthStr] = monthParam.split('-');
-  const year  = parseInt(yearStr)  || new Date().getFullYear();
-  const month = parseInt(monthStr) || new Date().getMonth() + 1;
-  const monthName = MONTH_NAMES[month - 1] || '';
+  let viewYear  = parseInt(yearStr)  || todayDate.getFullYear();
+  let viewMonth = (parseInt(monthStr) || todayDate.getMonth() + 1) - 1; // 0-based
 
-  document.getElementById('month-title').textContent = `${monthName} ${year}`;
-  document.title = `AI Weekly Signal — ${monthName} ${year}`;
+  function updateView() {
+    const monthName = MONTH_NAMES[viewMonth];
+    document.getElementById('month-label').textContent = `${monthName} ${viewYear}`;
+    document.title = `AI Weekly Signal — ${monthName} ${viewYear}`;
+    const mm = String(viewMonth + 1).padStart(2, '0');
+    const calUrl = `LandingPage.html?month=${viewYear}-${mm}`;
+    document.getElementById('top-cal-btn').href = calUrl;
+    document.getElementById('bottom-cal-btn').href = calUrl;
+    loadAndRender();
+  }
+
+  document.getElementById('prev-btn').addEventListener('click', () => {
+    viewMonth--; if (viewMonth < 0) { viewMonth = 11; viewYear--; }
+    updateView();
+  });
+  document.getElementById('next-btn').addEventListener('click', () => {
+    viewMonth++; if (viewMonth > 11) { viewMonth = 0; viewYear++; }
+    updateView();
+  });
+  document.getElementById('today-btn').addEventListener('click', () => {
+    viewYear = todayDate.getFullYear(); viewMonth = todayDate.getMonth();
+    updateView();
+  });
 
   function getWeekNumber(d) {
     const date = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
@@ -443,22 +485,28 @@
     arrow.textContent = open ? '▴' : '▾';
   });
 
-  fetch('./editions.json')
-    .then(r => r.json())
-    .then(all => {
-      const prefix = `${year}-${String(month).padStart(2,'0')}`;
+  let allEditionsCache = null;
+
+  function loadAndRender() {
+    const monthName = MONTH_NAMES[viewMonth];
+    const container = document.getElementById('weeks-container');
+    container.innerHTML = '<div class="empty-state">Loading…</div>';
+
+    const doRender = (all) => {
+      const prefix = `${viewYear}-${String(viewMonth + 1).padStart(2,'0')}`;
       const editions = all
         .filter(e => e.date && e.date.startsWith(prefix) && e.type !== 'monthly')
         .sort((a, b) => a.date.localeCompare(b.date));
 
-      const container = document.getElementById('weeks-container');
       container.innerHTML = '';
 
-      // Build filter dropdown from tags in this month's editions
+      // Rebuild filter dropdown
+      const dd = document.getElementById('filter-dropdown');
+      dd.innerHTML = '';
+      activeFilter = null;
       const tagSet = new Set();
       editions.forEach(e => (e.news || []).forEach(s => { if (s.tag) tagSet.add(s.tag); }));
       const tags = [...tagSet].filter(t => !EXCLUDED_TAGS.has(t));
-      const dd = document.getElementById('filter-dropdown');
       tags.forEach(tag => {
         const btn = document.createElement('button');
         btn.className = 'filter-item'; btn.dataset.tag = tag;
@@ -474,15 +522,20 @@
       }
 
       if (!editions.length) {
-        container.innerHTML = `<div class="empty-state">No editions found for ${monthName} ${year}</div>`;
+        container.innerHTML = `<div class="empty-state">No editions found for ${monthName} ${viewYear}</div>`;
         return;
       }
       editions.forEach(e => container.appendChild(renderWeek(e)));
-    })
-    .catch(() => {
-      document.getElementById('weeks-container').innerHTML =
-        `<div class="empty-state">Could not load editions</div>`;
-    });
+    };
+
+    if (allEditionsCache) { doRender(allEditionsCache); return; }
+    fetch('./editions.json')
+      .then(r => r.json())
+      .then(all => { allEditionsCache = all; doRender(all); })
+      .catch(() => { container.innerHTML = `<div class="empty-state">Could not load editions</div>`; });
+  }
+
+  updateView();
 </script>
 
 </body>
