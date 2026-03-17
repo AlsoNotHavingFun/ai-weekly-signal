@@ -19,7 +19,7 @@
         "short_title": "US bans deepseek"
       },
       {
-        "tag": "AI in Healthcare & Life Sciences",
+        "tag": "AI in Healthcare & Sciences",
         "headline": "Google launches AI co-scientist, proposing drug candidates before human researchers do",
         "desc": "Google Research, DeepMind, and Google Cloud jointly launched AI Co-Scientist, a Gemini 2.0-powered multi-agent system that autonomously generates and validates scientific hypotheses — including novel drug-repurposing candidates for acute myeloid leukaemia that were confirmed in laboratory experiments",
         "url": "https://example.com",
@@ -27,10 +27,10 @@
         "body": "The AI Co-Scientist system, developed jointly by Google Research, Google DeepMind, and Google Cloud AI Research, is designed to mirror the iterative logic of peer review: it generates hypotheses, debates them internally across specialised sub-agents, refines the most promising candidates, and proposes experimental designs — all without direct human instruction at each step. In one high-profile demonstration, the system proposed novel drug-repurposing targets for acute myeloid leukaemia (AML) and predicted antimicrobial resistance mechanisms that matched experimental findings which had not yet been published, compressing hypothesis cycles that typically span years into a matter of days.\n\nFor professionals operating at the intersection of AI and biopharma, the significance of this launch lies less in any single result than in what it suggests about the future structure of the drug discovery pipeline. Traditional pre-clinical research is bottlenecked not by data availability — clinical trial registries, genomics databases, and literature corpora are vast — but by the cognitive bandwidth required to synthesise them coherently. AI Co-Scientist directly attacks that bottleneck. Its multi-agent architecture, in which specialised models debate and challenge each other's outputs, introduces a form of internal quality control that single-model systems lack, making it structurally more resistant to the hallucination and overconfidence failures that have previously undermined trust in AI-generated scientific content.\n\nThis launch also signals a strategic alignment between Google's frontier model programme and its life-sciences ambitions. With Isomorphic Labs — Alphabet's drug-discovery spin-out — simultaneously closing a $600 million Series A in March (see below), Google is constructing a vertically integrated research stack: foundation model capabilities developed at DeepMind, scientific reasoning infrastructure deployed via AI Co-Scientist, and commercial drug development pursued through Isomorphic. The coherence of this stack positions Alphabet to capture value at each stage of the pipeline, from hypothesis to clinical candidate.",
         "note": "Google Research, 2025. Towards an AI Co-Scientist. research.google. \n\nDrug Target Review, 7 March 2025. Google's AI Co-Scientist accelerates drug development. drugtargetreview.com",
         "short_title": "Google AI co-scientists",
-        "news_date": "2026-03-06"
+        "news_date": "2026-03-02"
       },
       {
-        "tag": "AI in Enterprise Software & Agentic Development",
+        "tag": "AI in Enterprise Software & Productivity",
         "headline": "OpenAI opens the agentic era: Responses API and open-source Agents SDK ship on 11 March",
         "desc": "On 11 March, OpenAI released both a unified Responses API superseding its previous Chat Completions and Assistants interfaces, and an open-source Agents SDK supporting multi-agent orchestration across more than 100 LLMs including Anthropic's Claude and Google's Gemini — effectively standardising the infrastructure layer for production-grade AI agents",
         "url": "https://example.com",
@@ -38,10 +38,10 @@
         "note": "Franzen, C., 2025. OpenAI unveils Responses API, open-source Agents SDK. VentureBeat, 11 March. venturebeat.com. OpenAI Developer Changelog, 2025. developers.openai.com",
         "checked": true,
         "short_title": "OpenAI new agentic era",
-        "news_date": "2026-03-11"
+        "news_date": "2026-03-05"
       },
       {
-        "tag": "AI in Industrial & Robotics",
+        "tag": "AI in Hardware & Infrastructure",
         "headline": "Google DeepMind's Gemini Robotics brings general-purpose AI into the physical world",
         "desc": "On 12 March, Google DeepMind launched Gemini Robotics and its companion model Gemini Robotics-ER, both built on Gemini 2.0 with physical action as a native output modality — enabling robots to generalise across novel objects and environments without task-specific retraining, in partnership with Boston Dynamics, Agility Robotics, and Apptronik",
         "url": "https://example.com",
@@ -49,7 +49,7 @@
         "note": "Mulligan, S., 2025. Gemini Robotics uses Google's top language model to make robots more useful. MIT Technology Review, 12 March. technologyreview.com. Bloomberg, 2025. Google debuts AI model for robotics. bloomberg.com, 12 March. Wikipedia, 2025. Gemini Robotics. en.wikipedia.org",
         "checked": true,
         "short_title": "Google DeepMind Gemini Robotics",
-        "news_date": "2026-03-12"
+        "news_date": "2026-03-04"
       },
       {
         "tag": "AI in Finance & Capital Markets",
@@ -60,7 +60,7 @@
         "note": "Fortune, 2026. The pioneer behind Google Gemini is tackling an even bigger challenge. fortune.com (reports March 2025 Series A close). Wikipedia, 2025. Isomorphic Labs. en.wikipedia.org. PYMNTS, 2025. Google DeepMind CEO: AI-designed drugs coming to clinical trials in 2025. pymnts.com.",
         "checked": true,
         "short_title": "Isomorphic Labs closes a $600M Deal",
-        "news_date": "2026-03-13"
+        "news_date": "2026-03-06"
       }
     ],
     "date": "2026-03-06"
@@ -74,7 +74,7 @@
     },
     "news": [
       {
-        "tag": "AI in Governance & National Security",
+        "tag": "AI in Geopolitics & National Security",
         "headline": "Anthropic sues the Pentagon, setting a landmark precedent for AI safety redlines in defence contracts",
         "desc": "On 9 March, Anthropic filed two federal lawsuits against the Department of Defense after the Trump administration designated the company a \"supply-chain risk\" — a label typically reserved for foreign adversaries — following Anthropic's refusal to allow Claude to be used for autonomous weapons or mass domestic surveillance",
         "url": "https://example.com",
@@ -96,7 +96,7 @@
         "news_date": "2026-03-09"
       },
       {
-        "tag": "AI in Healthcare & Industrial Science",
+        "tag": "AI in Healthcare & Sciences",
         "headline": "Eli Lilly inaugurates LillyPod, the most powerful AI supercomputer in pharma history",
         "desc": "In the week of 9 March, Eli Lilly formally inaugurated LillyPod at its Indianapolis headquarters — the first NVIDIA DGX SuperPOD built on Blackwell Ultra B300 architecture, delivering over 9,000 petaflops of AI performance from 1,016 GPUs and capable of simulating billions of molecular hypotheses in parallel",
         "url": "https://example.com",
@@ -104,7 +104,7 @@
         "body": "LillyPod is the centrepiece of a broader five-year, $1 billion AI strategy that Lilly has constructed in partnership with NVIDIA, with the system assembled in just four months as the world's inaugural deployment of NVIDIA's B300 DGX SuperPOD configuration. The practical implication for drug discovery is a categorical shift in throughput: traditional wet-lab teams are constrained to testing approximately 2,000 molecular ideas per target per year due to physical and staffing bottlenecks. LillyPod's computational dry lab dissolves that constraint entirely, enabling scientists to simulate billions of candidates — including those that failed in previous experiments, a dataset Lilly has accumulated across 150 years and valued at over $1 billion — before committing any resources to physical synthesis. The system spans workloads from genomics and single-cell biology to peptide design, manufacturing quality control, and clinical trial optimisation.\n\nThe strategic architecture of the launch contains an ecosystem dimension that deserves attention. Lilly simultaneously introduced TuneLab, a federated AI and machine learning drug-discovery platform that makes models trained on proprietary Lilly data — including the hard-won lessons from millions of failed molecules — available to biotech partners while keeping each party's underlying data isolated via NVIDIA FLARE federated learning infrastructure. This positions Lilly not only as a drug developer but as an AI platform provider within the life-sciences ecosystem, creating a data network effect in which external contributions improve shared models without requiring data pooling. For smaller biotechs that lack the capital to train foundation models on proprietary clinical data, TuneLab represents a direct competitive levelling mechanism.\n\nThe investment signals a fundamental change in how large pharmaceutical companies conceptualise the capital allocation trade-off between compute and laboratory infrastructure. Lilly executives explicitly framed the 10-year drug development timeline — long treated as an immovable constant — as reducible to five years through AI-accelerated pre-clinical screening, automated clinical trial design, and real-time manufacturing optimisation. If competitors interpret LillyPod as a proof of concept for in-house AI factory ownership rather than rented cloud compute, the pharmaceutical industry could be at the beginning of a broad capital expenditure cycle in dedicated AI infrastructure that mirrors what hyperscalers began in 2023 — with similarly profound implications for NVIDIA's order pipeline.",
         "note": "Eli Lilly and Company, 2026. Lilly partners with NVIDIA to build the industry's most powerful AI supercomputer. investor.lilly.com. \nNVIDIA Blog, 2026. Now Live: Lilly AI Factory for Pharmaceutical Discovery and Development. blogs.nvidia.com. \nWorld Pharma Today, 2026. Lilly Launches New AI Supercomputer for Drug Development. worldpharmatoday.com",
         "short_title": "LillyPod inauguration",
-        "news_date": "2026-03-18"
+        "news_date": "2026-03-12"
       },
       {
         "tag": "AI in Hardware & Infrastructure",
@@ -115,10 +115,10 @@
         "body": "The Morgan Stanley report, distributed to institutional clients ahead of NVIDIA's GTC 2026 keynote, frames the current moment as a structural inflection: the multi-year capital expenditure cycle at leading AI labs — estimated at $2.9 trillion in global data centre construction through 2028 — has now accumulated sufficient compute to produce model capability jumps that will be qualitatively, not merely incrementally, different from those seen in 2024 and 2025. The bank cited OpenAI's GPT-5.4 \"Thinking\" model, which scored 83% on the GDPVal benchmark placing it at or above expert human performance on economically valuable tasks across 44 professional occupations, as evidence that the capability curve is steepening faster than investors have priced in. Executives at major US labs were quoted describing progress that would \"shock\" the investment community. The bank's \"Intelligence Factory\" model projects the resulting US power deficit at 9 to 18 gigawatts through 2028 — a 12% to 25% shortfall relative to projected demand — and describes developers already bypassing grid constraints by converting Bitcoin mining operations into high-performance computing centres, installing natural gas turbines directly at data centre sites, and deploying fuel cells for localised generation.\n\nThe economic modelling section of the report introduces what the bank labels the \"15-15-15\" dynamic: data centre leases locking in at 15-year terms, generating approximately 15% yields, and creating an estimated $15 per watt in net value creation. At the $2.9 trillion construction estimate, this implies a value creation pool of roughly $43 trillion over the lease cycle — a figure that, if even partially realisable, would represent one of the largest capital formation events in economic history. Morgan Stanley also flags the deflationary dimension of the impending capability leap, predicting that AI systems at this performance level will allow companies to produce professional-grade knowledge work at a fraction of current cost, with a survey of 1,000 executives across five countries already reporting a 4% net workforce reduction directly attributable to AI-driven efficiencies over the preceding 12 months.\n\nFor practitioners in finance, strategy, and AI product development, the report's most actionable claim is temporal: the bank frames the April–June 2026 window as the likely moment of visible step-change, not a distant theoretical horizon. This creates a concrete urgency for organisations that have treated AI integration as a multi-year transformation initiative to accelerate their readiness assessments. The report also highlights a structural market risk: the energy infrastructure required to sustain the intelligence explosion is itself supply-constrained, and any slippage in power delivery timelines — regulatory, permitting, or construction — could throttle model deployment even if the underlying compute is available, creating a performance-to-infrastructure gap with direct implications for the valuations of hyperscalers and model providers",
         "note": "Fortune, 2026. Morgan Stanley warns an AI breakthrough is coming in 2026 — and most of the world isn't ready. fortune.com, 13 March. \nSupercarblondie, 2026. Morgan Stanley warns a major AI breakthrough will happen in 2026 that the world isn't ready for. supercarblondie.com. \nDigit.in, 2026. A major AI breakthrough could arrive in 2026, straining power grids and disrupting jobs. digit.in, 14 March",
         "short_title": "NVIDIA's Vera Rubin Enters Production",
-        "news_date": "2026-03-16"
+        "news_date": "2026-03-13"
       },
       {
-        "tag": "AI in Finance & Macroeconomics",
+        "tag": "AI in Finance & Capital Markets",
         "headline": "Morgan Stanley warns of a non-linear AI capability leap in Q2 2026 — and a 9–18 GW power shortfall to match",
         "desc": "Published on 13 March, a sweeping Morgan Stanley research report warned that the market is \"not prepared\" for a non-linear jump in LLM capabilities expected between April and June 2026, driven by unprecedented compute accumulation at frontier labs — and projected a US power grid shortfall of 9 to 18 gigawatts through 2028 as a direct consequence",
         "url": "https://example.com",

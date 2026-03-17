@@ -272,18 +272,58 @@
     a.month-dot.filled-4:hover { background: #6645b8; transform: rotate(45deg) scale(1.15); }
     a.month-dot.filled-5:hover { background: #4f2f9e; transform: rotate(45deg) scale(1.15); }
 
-    /* ── Week button ── */
-    .week-btn {
-      display: block; margin-top: 0rem;
-      background: none; border: 1px solid var(--rule); border-radius: 4px;
-      padding: 0.45rem 0.7rem; font-family: 'DM Mono', monospace; font-size: 0.7rem;
-      letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent);
-      text-decoration: none; transition: border-color 0.15s, background 0.15s;
-      text-align: center;
+    /* ── Week bar (spans full week width) ── */
+    .week-bar {
+      display: flex; align-items: center; justify-content: center;
+      width: 100%; padding: 0.4rem 1rem;
+      font-family: 'DM Mono', monospace; font-size: 0.68rem;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--accent); text-decoration: none;
+      background: rgba(192,57,43,0.03); border-bottom: 1px solid rgba(0,0,0,0.4);
+      transition: background 0.15s;
     }
-    .week-btn:hover { border-color: var(--accent); background: rgba(192,57,43,0.05); }
-    .week-btn-draft { border-style: dashed; color: var(--muted); }
-    .week-btn-draft:hover { border-color: var(--muted); background: none; color: var(--muted); }
+    .week-bar:hover { background: rgba(192,57,43,0.08); }
+    .week-bar-draft { color: var(--muted); background: transparent; border-bottom: 1px solid rgba(0,0,0,0.4); }
+    .week-bar-draft:hover { background: rgba(0,0,0,0.02); }
+
+    /* ── Filter panel ── */
+    .cal-main-wrap { display: flex; align-items: flex-start; gap: 1.25rem; }
+    .filter-panel { flex-shrink: 0; width: 155px; position: sticky; top: 1rem; }
+    .filter-toggle {
+      width: 100%; background: none; border: 1px solid var(--rule); border-radius: 4px;
+      padding: 0.5rem 0.8rem; font-family: 'DM Mono', monospace; font-size: 0.68rem;
+      letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink); cursor: pointer;
+      display: flex; justify-content: space-between; align-items: center;
+      transition: border-color 0.15s;
+    }
+    .filter-toggle:hover { border-color: var(--ink); }
+    .filter-dropdown {
+      display: none; flex-direction: column;
+      border: 1px solid var(--rule); border-top: none;
+      border-radius: 0 0 4px 4px; background: var(--paper);
+    }
+    .filter-dropdown.open { display: flex; }
+    .filter-item {
+      background: none; border: none; border-bottom: 1px solid var(--rule);
+      padding: 0.55rem 0.8rem; font-family: 'DM Sans', sans-serif; font-size: 0.8rem;
+      color: var(--muted); cursor: pointer; text-align: left; line-height: 1.3;
+      transition: color 0.12s, transform 0.12s;
+    }
+    .filter-item:last-child { border-bottom: none; }
+    .filter-item:hover { font-weight: 700; color: var(--ink); transform: translateX(3px); }
+    .filter-item.active { font-weight: 700; color: var(--accent); }
+    .filter-clear {
+      background: none; border: none; border-top: 1px solid var(--rule);
+      padding: 0.45rem 0.8rem; font-family: 'DM Mono', monospace; font-size: 0.6rem;
+      letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted);
+      cursor: pointer; text-align: center; width: 100%;
+      transition: color 0.12s;
+    }
+    .filter-clear:hover { color: var(--ink); }
+
+    /* ── Marker filter states ── */
+    .marker-dim { opacity: 0.12; pointer-events: none; }
+    .marker-active { font-weight: 700; }
 
     /* ── Story markers ── */
     .story-marker {
@@ -348,17 +388,23 @@
     </div>
   </div>
 
-  <div class="cal-grid">
-    <div class="cal-header-row">
-      <div class="cal-header-cell">Sun</div>
-      <div class="cal-header-cell">Mon</div>
-      <div class="cal-header-cell">Tue</div>
-      <div class="cal-header-cell">Wed</div>
-      <div class="cal-header-cell">Thu</div>
-      <div class="cal-header-cell is-friday">Fri</div>
-      <div class="cal-header-cell">Sat</div>
+  <div class="cal-main-wrap">
+    <div class="filter-panel" id="filter-panel">
+      <button class="filter-toggle" id="filter-toggle">Sectors <span id="filter-arrow">▾</span></button>
+      <div class="filter-dropdown" id="filter-dropdown"></div>
     </div>
-    <div class="cal-weeks" id="cal-weeks"></div>
+    <div class="cal-grid" style="flex:1">
+      <div class="cal-header-row">
+        <div class="cal-header-cell">Sun</div>
+        <div class="cal-header-cell">Mon</div>
+        <div class="cal-header-cell">Tue</div>
+        <div class="cal-header-cell">Wed</div>
+        <div class="cal-header-cell">Thu</div>
+        <div class="cal-header-cell is-friday">Fri</div>
+        <div class="cal-header-cell">Sat</div>
+      </div>
+      <div class="cal-weeks" id="cal-weeks"></div>
+    </div>
   </div>
 
 </div>
@@ -368,7 +414,33 @@
 <script>
   let EDITIONS = {};         // weekly:  "YYYY-MM-DD" → filled count (0–5)
   let MONTHLY_EDITIONS = {}; // monthly: "YYYY-MM-DD" → filled count (0–5)
-  let STORY_MARKERS = {};    // "YYYY-MM-DD" → [{headline, url}]
+  let STORY_MARKERS = {};    // "YYYY-MM-DD" → [{headline, url, tag}]
+  let ALL_TAGS = [];         // ordered list of unique sector tags
+  let activeFilter = null;
+
+  function getWeekNumber(d) {
+    const date = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+    const day = date.getUTCDay() || 7;
+    date.setUTCDate(date.getUTCDate() + 4 - day);
+    const yearStart = new Date(Date.UTC(date.getUTCFullYear(), 0, 1));
+    return Math.ceil((((date - yearStart) / 86400000) + 1) / 7);
+  }
+
+  function shortTag(tag) {
+    return tag.replace(/^AI\s+in\s+/i, '').replace(/^AI\s*\+\s*/i, '').trim();
+  }
+
+  function applyFilter(tag) {
+    activeFilter = activeFilter === tag ? null : tag;
+    document.querySelectorAll('.story-marker').forEach(el => {
+      if (!activeFilter) { el.classList.remove('marker-dim', 'marker-active'); }
+      else if (el.dataset.tag === activeFilter) { el.classList.remove('marker-dim'); el.classList.add('marker-active'); }
+      else { el.classList.remove('marker-active'); el.classList.add('marker-dim'); }
+    });
+    document.querySelectorAll('.filter-item').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.tag === activeFilter);
+    });
+  }
 
   const EDIT_MODE = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
 
@@ -433,6 +505,13 @@
       const weekWrap = document.createElement('div');
       weekWrap.className = 'cal-week-wrap';
 
+      // Week bar spanning full width — shown above the week if there's an edition (or upcoming in edit mode)
+      const fridayCell = cells[w * 7 + 5];
+      const fridayDate = new Date(fridayCell.year, fridayCell.month, fridayCell.day);
+      fridayDate.setHours(0, 0, 0, 0);
+      const fridayKey = editionKey(fridayDate);
+      const upcomingFridays = EDIT_MODE ? nextNFridays(2) : new Set();
+      const showBar = EDITIONS.hasOwnProperty(fridayKey) || upcomingFridays.has(fridayKey);
       const weekEl = document.createElement('div');
       weekEl.className = 'cal-week';
 
@@ -451,28 +530,16 @@
         numEl.textContent = cell.day;
         dayEl.appendChild(numEl);
 
-        // Friday with an edition (or upcoming draft in edit mode) gets a Week button
-        if (date.getDay() === 5) {
-          const key = editionKey(date);
-          const upcomingFridays = EDIT_MODE ? nextNFridays(2) : new Set();
-          const showBtn = EDITIONS.hasOwnProperty(key) || upcomingFridays.has(key);
-          if (showBtn) {
-            const wb = document.createElement('a');
-            wb.className = 'week-btn' + (!EDITIONS.hasOwnProperty(key) ? ' week-btn-draft' : '');
-            wb.href = `ReaderPage.html?date=${key}`;
-            wb.textContent = 'This Week →';
-            dayEl.appendChild(wb);
-          }
-        }
-
         // Story markers for this day
         const markers = STORY_MARKERS[editionKey(date)] || [];
         markers.forEach(m => {
           const a = document.createElement('a');
           a.className = 'story-marker' + (markers.length === 1 ? ' story-marker-solo' : ' story-marker-multi');
+          if (activeFilter) a.classList.add(m.tag === activeFilter ? 'marker-active' : 'marker-dim');
           a.href = m.url;
           a.textContent = m.headline;
           a.title = m.headline;
+          a.dataset.tag = m.tag || '';
           dayEl.appendChild(a);
         });
 
@@ -494,9 +561,24 @@
 
         weekEl.appendChild(dayEl);
       }
-      weeksEl.appendChild(weekEl);
+      weekWrap.appendChild(weekEl);
+      if (showBar) {
+        const wb = document.createElement('a');
+        wb.className = 'week-bar' + (!EDITIONS.hasOwnProperty(fridayKey) ? ' week-bar-draft' : '');
+        wb.href = `ReaderPage.html?date=${fridayKey}`;
+        wb.textContent = `See the entire week ${getWeekNumber(fridayDate)} →`;
+        weekWrap.appendChild(wb);
+      }
+      weeksEl.appendChild(weekWrap);
     }
   }
+
+  document.getElementById('filter-toggle').addEventListener('click', () => {
+    const dd = document.getElementById('filter-dropdown');
+    const arrow = document.getElementById('filter-arrow');
+    const open = dd.classList.toggle('open');
+    arrow.textContent = open ? '▴' : '▾';
+  });
 
   document.getElementById('prev-btn').addEventListener('click', () => {
     viewMonth--;
@@ -518,17 +600,38 @@
   fetch('./editions.json')
     .then(r => r.json())
     .then(all => {
+      const tagSet = new Set();
       all.forEach(e => {
         const count = typeof e.filled === 'number' ? e.filled : 0;
         if (e.type === 'monthly') MONTHLY_EDITIONS[e.date] = count;
         else                      EDITIONS[e.date] = count;
         (e.news || []).forEach((story, idx) => {
+          if (story.tag) tagSet.add(story.tag);
           if (!story.news_date) return;
           if (!STORY_MARKERS[story.news_date]) STORY_MARKERS[story.news_date] = [];
           const params = `date=${e.date}&idx=${idx}${e.type === 'monthly' ? '&type=monthly' : ''}`;
-          STORY_MARKERS[story.news_date].push({ headline: story.short_title || story.headline, url: `ArticlePage.html?${params}` });
+          STORY_MARKERS[story.news_date].push({ headline: story.short_title || story.headline, url: `ArticlePage.html?${params}`, tag: story.tag || '' });
         });
       });
+      const EXCLUDED_TAGS = new Set(['Models', 'Research', 'Industry', 'Policy', 'Tools']);
+      ALL_TAGS = [...tagSet].filter(t => !EXCLUDED_TAGS.has(t));
+      // Populate filter dropdown
+      const dd = document.getElementById('filter-dropdown');
+      ALL_TAGS.forEach(tag => {
+        const btn = document.createElement('button');
+        btn.className = 'filter-item';
+        btn.dataset.tag = tag;
+        btn.textContent = shortTag(tag);
+        btn.addEventListener('click', () => { applyFilter(tag); });
+        dd.appendChild(btn);
+      });
+      if (ALL_TAGS.length > 0) {
+        const clr = document.createElement('button');
+        clr.className = 'filter-clear';
+        clr.textContent = 'Clear filter';
+        clr.addEventListener('click', () => { applyFilter(null); activeFilter = null; document.querySelectorAll('.filter-item').forEach(b => b.classList.remove('active')); document.querySelectorAll('.story-marker').forEach(el => el.classList.remove('marker-dim','marker-active')); });
+        dd.appendChild(clr);
+      }
       buildCalendar(viewYear, viewMonth);
     })
     .catch(() => buildCalendar(viewYear, viewMonth)); // render anyway if file missing
