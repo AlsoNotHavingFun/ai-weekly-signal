@@ -297,10 +297,9 @@
     <div class="cal-nav">
       <button class="cal-nav-btn" id="prev-btn" aria-label="Previous month">&#8249;</button>
       <button class="cal-nav-btn" id="next-btn" aria-label="Next month">&#8250;</button>
-      <span class="cal-month-label" id="month-label"></span>
       <button class="cal-today-btn" id="today-btn">Today</button>
     </div>
-    <a class="monthly-view-btn" id="monthly-view-btn" href="MonthlyPage.html?month=2026-03">View the full month of March</a>
+    <a class="monthly-view-btn" id="monthly-view-btn" href="MonthlyPage.html?month=2026-03">Monthly view</a>
     <!-- Right: view selector -->
     <div class="cal-view-wrap">
       View by
@@ -399,8 +398,6 @@
   function buildCalendar(year, month) {
     const label = new Date(year, month, 1)
       .toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
-    document.getElementById('month-label').textContent = label;
-
     const weeksEl = document.getElementById('cal-weeks');
     weeksEl.innerHTML = '';
 
@@ -474,7 +471,7 @@
       if (showBar) {
         const wb = document.createElement('a');
         wb.className = 'week-bar' + (!EDITIONS.hasOwnProperty(fridayKey) ? ' week-bar-draft' : '');
-        wb.href = `ReaderPage.html?date=${fridayKey}`;
+        wb.href = `WeeklyPage.html?date=${fridayKey}`;
         wb.textContent = `See the entire week ${getWeekNumber(fridayDate)} →`;
         weekWrap.appendChild(wb);
       }
@@ -495,7 +492,7 @@
     const btn = document.getElementById('monthly-view-btn');
     const mm  = String(viewMonth + 1).padStart(2, '0');
     btn.href = `MonthlyPage.html?month=${viewYear}-${mm}`;
-    btn.textContent = `View the full month of ${MONTH_NAMES[viewMonth]}`;
+    btn.textContent = 'Monthly view';
     document.getElementById('cal-month-title').textContent = `${MONTH_NAMES[viewMonth]} ${viewYear}`;
   }
 
@@ -532,7 +529,7 @@
           if (!story.news_date) return;
           if (!STORY_MARKERS[story.news_date]) STORY_MARKERS[story.news_date] = [];
           const params = `date=${e.date}&idx=${idx}${e.type === 'monthly' ? '&type=monthly' : ''}`;
-          STORY_MARKERS[story.news_date].push({ headline: story.short_title || story.headline, url: `ArticlePage.html?${params}`, tag: story.tag || '' });
+          STORY_MARKERS[story.news_date].push({ headline: story.short_title || story.headline, url: `ReaderPage.html?${params}`, tag: story.tag || '' });
         });
       });
       const EXCLUDED_TAGS = new Set(['Models', 'Research', 'Industry', 'Policy', 'Tools']);

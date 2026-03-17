@@ -49,8 +49,8 @@
 
     /* ── Month toolbar ── */
     .month-toolbar {
-      display: flex; align-items: center; justify-content: space-between;
-      width: 90%; margin: 1.5rem auto 0; padding-bottom: 1.5rem;
+      display: flex; align-items: center;
+      width: 90%; margin: 1.5rem auto 0; padding-bottom: 1.5rem; padding-right: 4.5rem;
     }
     .month-nav { display: flex; align-items: center; gap: 0.9rem; }
     .month-nav-btn {
@@ -72,11 +72,15 @@
     }
     .month-today-btn:hover { border-color: var(--accent); background: rgba(192,57,43,0.05); }
     .view-cal-btn {
-      display: inline-block; font-family: 'DM Mono', monospace;
+      display: inline-flex; align-items: center; justify-content: center;
+      font-family: 'DM Mono', monospace;
       font-size: 0.68rem; letter-spacing: 0.5em; text-transform: uppercase;
       color: var(--accent); border: 1px solid var(--accent); border-radius: 4px;
       padding: 0.45rem 1.2rem; text-decoration: none;
       transition: background 0.15s;
+    }
+    .month-toolbar .view-cal-btn {
+      flex: 1; margin-left: 1.25rem;
     }
     .view-cal-btn:hover { background: rgba(192,57,43,0.06); }
 
@@ -376,7 +380,7 @@
   }
 
   function articleUrl(edDate, idx, type) {
-    return `ArticlePage.html?date=${edDate}&idx=${idx}${type === 'monthly' ? '&type=monthly' : ''}`;
+    return `ReaderPage.html?date=${edDate}&idx=${idx}${type === 'monthly' ? '&type=monthly' : ''}`;
   }
 
   function makeCard(story, edDate, idx, type) {
@@ -452,7 +456,7 @@
     const label = document.createElement('a');
     label.className = 'week-label';
     label.textContent = `Week ${weekNum}`;
-    label.href = `ReaderPage.html?date=${edDate}${type === 'monthly' ? '&type=monthly' : ''}`;
+    label.href = `WeeklyPage.html?date=${edDate}${type === 'monthly' ? '&type=monthly' : ''}`;
     bracket.append(shape, label);
     section.appendChild(bracket);
 

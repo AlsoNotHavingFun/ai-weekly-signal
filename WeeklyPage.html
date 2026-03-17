@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AI Weekly Signal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #1c1c1a; --paper: #faf8f4; --accent: #c0392b;
+      --muted: #8a8478; --rule: #ddd8ce;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--paper); color: var(--ink); font-family: 'DM Sans', sans-serif; min-height: 100vh; }
+
+    /* ── Top bar ── */
+    .top-bar {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1.1rem 1.75rem; border-bottom: 1px solid var(--rule);
+    }
+    .back-btn {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-family: 'DM Mono', monospace; font-size: 0.85rem;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--muted); text-decoration: none; transition: color 0.15s;
+    }
+    .back-btn::before { content: '←'; }
+    .back-btn:hover { color: var(--ink); }
+
+    /* ── Hero ── */
+    .hero {
+      width: 100%; height: 360px; background: #e8e3d8;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden; position: relative;
+    }
+    .hero::before {
+      content: ''; position: absolute; inset: 0;
+      background: repeating-linear-gradient(45deg, transparent, transparent 18px, rgba(255,255,255,0.12) 18px, rgba(255,255,255,0.12) 19px);
+    }
+    .hero-inner { position: relative; text-align: center; }
+    .hero-glyph {
+      font-family: 'Playfair Display', serif; font-size: 5rem; font-weight: 900;
+      color: rgba(180,170,155,0.5); line-height: 1; display: block;
+      margin-bottom: 0.5rem; user-select: none;
+    }
+    .hero-label {
+      font-family: 'DM Mono', monospace; font-size: 0.6rem;
+      letter-spacing: 0.3em; text-transform: uppercase; color: rgba(122,112,96,0.5);
+    }
+
+    /* ── Masthead ── */
+    .masthead { border-bottom: none; padding: 1.2rem 0 0.8rem; text-align: center; }
+    .masthead-eyebrow {
+      font-family: 'DM Mono', monospace; font-size: 0.9rem;
+      letter-spacing: 0.25em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.5rem;
+    }
+    .masthead-title {
+      font-family: 'Playfair Display', serif; font-size: clamp(3rem, 8vw, 6rem);
+      font-weight: 900; line-height: 0.92; letter-spacing: -0.02em;
+    }
+    .masthead-title span { color: var(--accent); }
+    .masthead-subtitle {
+      margin: 1.4rem 0 1.8rem; font-family: 'DM Sans', sans-serif;
+      font-size: 1.1rem; color: var(--ink); font-weight: 300;
+    }
+    .masthead-meta {
+      display: flex; justify-content: center; align-items: center; gap: 1.5rem;
+      margin-top: 1.2rem; font-family: 'DM Mono', monospace; font-size: 0.85rem;
+      letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted);
+    }
+    .masthead-meta .dot { color: var(--accent); }
+    .header-edit-btn {
+      background: none; border: none; cursor: pointer; color: var(--rule);
+      padding: 0 0.2rem; transition: color 0.15s, transform 0.15s;
+    }
+    .header-edit-btn:hover { color: var(--muted); transform: scale(1.15); }
+
+    /* ── Content ── */
+    .content { max-width: 980px; margin: 0 auto; padding: 0 1.5rem 6rem; }
+    .section-label {
+      font-family: 'DM Mono', monospace; font-size: 0.58rem;
+      letter-spacing: 0.3em; text-transform: uppercase; color: var(--accent);
+      margin: 2.5rem 0 0.1rem; display: flex; align-items: center; gap: 1rem;
+    }
+    .section-label::after { content: ''; flex: 1; height: 1px; background: var(--rule); }
+
+    /* ── Story wrappers with edit button ── */
+    .story-wrap { position: relative; }
+    .story-edit-btn, .story-check-btn {
+      display: none; /* shown only in edit-mode */
+      position: absolute; top: 0;
+      width: 2rem; height: 2rem; background: transparent;
+      border: 1px solid var(--rule); border-radius: 4px; cursor: pointer;
+      align-items: center; justify-content: center;
+      transition: color 0.15s, border-color 0.15s, background 0.15s, transform 0.15s; z-index: 1;
+    }
+    .story-edit-btn { right: 0; color: var(--muted); }
+    .story-edit-btn:hover { color: var(--accent); border-color: var(--accent); transform: scale(1.1); }
+    .story-check-btn { right: 2.4rem; color: var(--muted); font-size: 0.85rem; }
+    .story-check-btn.is-checked { background: #5fa864; border-color: #5fa864; color: #fff; }
+    .story-check-btn:hover { border-color: #5fa864; color: #5fa864; transform: scale(1.1); }
+    .story-check-btn.is-checked:hover { background: #449249; border-color: #449249; color: #fff; }
+    body.edit-mode .story-edit-btn, body.edit-mode .story-check-btn { display: flex; }
+
+    /* ── Lead story ── */
+    .lead-story {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 3.5rem; align-items: start;
+      padding-bottom: 2.5rem; border-bottom: 1px solid var(--rule); margin-bottom: 2.5rem;
+    }
+    body.edit-mode .lead-story > div:last-child { padding-right: 2.5rem; }
+    .lead-num {
+      font-family: 'Playfair Display', serif; font-size: 8rem; font-weight: 900;
+      line-height: 0.85; color: rgba(0,0,0,0.18); margin-bottom: 1.25rem; user-select: none;
+    }
+    .story-tag {
+      font-family: 'DM Mono', monospace; font-size: 0.68rem;
+      letter-spacing: 0.25em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.5rem;
+    }
+    .lead-headline {
+      font-family: 'Playfair Display', serif; font-size: clamp(1.6rem, 3vw, 2.4rem);
+      font-weight: 700; line-height: 1.2; letter-spacing: -0.01em;
+    }
+    .lead-desc {
+      font-size: 1rem; line-height: 1.75; color: #5a5650; font-weight: 300; margin-bottom: 1.5rem; margin-top: 7.6rem;
+    }
+    .read-link {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      font-family: 'DM Mono', monospace; font-size: 0.62rem;
+      letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent);
+      text-decoration: none; border-bottom: 1px solid transparent; padding-bottom: 1px;
+      transition: border-color 0.15s;
+    }
+    .read-link:hover { border-bottom-color: var(--accent); }
+    .read-link::after { content: '→'; margin-left: 0.2rem; }
+
+    /* ── Story pair grid ── */
+    .story-pair {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 0;
+      border-bottom: 1px solid var(--rule); margin-bottom: 2.5rem;
+    }
+    .story-col { position: relative; padding: 0 2.25rem 2.25rem 0; display: flex; flex-direction: column; }
+    .story-col > .read-link { margin-top: auto; }
+    .story-col + .story-col { padding: 0 0 2.25rem 2.25rem; border-left: 1px solid var(--rule); }
+    .story-num {
+      font-family: 'Playfair Display', serif; font-size: 4rem; font-weight: 900;
+      line-height: 0.9; color: rgba(0,0,0,0.18); margin-bottom: 1rem; user-select: none;
+    }
+    .story-headline {
+      font-family: 'Playfair Display', serif; font-size: clamp(1.1rem, 2vw, 1.45rem);
+      font-weight: 700; line-height: 1.22; margin-bottom: 0.6rem;
+    }
+    .story-desc { font-size: 0.9rem; line-height: 1.68; color: #5a5650; font-weight: 300; margin-bottom: 1rem; }
+
+    /* ── Mid image ── */
+    .mid-image {
+      width: 100%; height: 240px; background: #e8e3d8; border-radius: 2px;
+      margin-bottom: 2.5rem; display: flex; align-items: center; justify-content: center;
+      overflow: hidden; position: relative;
+    }
+    .mid-image::before {
+      content: ''; position: absolute; inset: 0;
+      background: repeating-linear-gradient(-45deg, transparent, transparent 14px, rgba(255,255,255,0.1) 14px, rgba(255,255,255,0.1) 15px);
+    }
+    .mid-inner {
+      position: relative; text-align: center; color: rgba(122,112,96,0.45);
+      font-family: 'DM Mono', monospace; font-size: 0.58rem; letter-spacing: 0.25em; text-transform: uppercase;
+    }
+    .mid-inner span { display: block; font-size: 1.8rem; margin-bottom: 0.4rem; opacity: 0.5; }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center; padding: 2rem; font-family: 'DM Mono', monospace;
+      font-size: 0.75rem; letter-spacing: 0.15em; color: var(--ink);
+      text-transform: uppercase; border-top: 1px solid var(--rule);
+    }
+
+    /* ── Modal ── */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(14,14,14,0.5); backdrop-filter: blur(2px);
+      z-index: 100; align-items: center; justify-content: center; padding: 1.5rem;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: var(--paper); border: 1px solid var(--rule); border-radius: 6px;
+      width: 100%; max-width: 500px; max-height: 88vh; display: flex; flex-direction: column;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.15); animation: modal-in 0.18s ease;
+    }
+    @keyframes modal-in { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+    .modal-header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1.4rem 1.5rem 1rem; border-bottom: 1px solid var(--rule); flex-shrink: 0;
+    }
+    .modal-title { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 700; }
+    .modal-subtitle {
+      font-family: 'DM Mono', monospace; font-size: 0.6rem;
+      letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-top: 0.2rem;
+    }
+    .modal-close {
+      background: none; border: none; font-size: 1.4rem; color: var(--muted);
+      cursor: pointer; padding: 0.2rem 0.4rem; border-radius: 3px;
+      transition: color 0.15s, background 0.15s; line-height: 1;
+    }
+    .modal-close:hover { color: var(--ink); background: var(--rule); }
+    .modal-body { overflow-y: auto; padding: 1.5rem; flex: 1; display: flex; flex-direction: column; gap: 1.2rem; }
+    .field-group { display: flex; flex-direction: column; gap: 0.35rem; }
+    .field-row   { display: grid; grid-template-columns: 1fr 2fr; gap: 1rem; }
+    .field-label {
+      font-family: 'DM Mono', monospace; font-size: 0.58rem;
+      letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted);
+    }
+    .field-input, .field-textarea {
+      width: 100%; background: transparent; border: none;
+      border-bottom: 1px solid var(--rule); padding: 0.4rem 0;
+      font-family: 'DM Sans', sans-serif; font-size: 0.95rem;
+      color: var(--ink); outline: none; transition: border-color 0.15s;
+    }
+    .field-input:focus, .field-textarea:focus { border-bottom-color: var(--ink); }
+    .field-textarea { resize: vertical; min-height: 60px; }
+    .modal-footer {
+      display: flex; justify-content: space-between; align-items: center; gap: 1rem;
+      padding: 1rem 1.5rem 1.4rem; border-top: 1px solid var(--rule); flex-shrink: 0;
+    }
+    .modal-footer-right { display: flex; align-items: center; gap: 1rem; }
+    .clear-btn, .reset-btn {
+      background: none; border: 1px solid var(--rule); border-radius: 4px;
+      padding: 0.6rem 1.25rem; font-family: 'DM Mono', monospace; font-size: 0.68rem;
+      letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted);
+      cursor: pointer; transition: color 0.15s, border-color 0.15s;
+    }
+    .clear-btn:hover { color: var(--accent); border-color: var(--accent); }
+    .reset-btn:hover { color: var(--ink); border-color: var(--ink); }
+    .clear-btn.hidden, .reset-btn.hidden { display: none; }
+    .save-msg {
+      font-family: 'DM Mono', monospace; font-size: 0.62rem;
+      letter-spacing: 0.1em; color: #5a9e5a; opacity: 0; transition: opacity 0.3s;
+    }
+    .save-msg.visible { opacity: 1; }
+    .save-btn {
+      background: var(--ink); color: var(--paper); border: none; border-radius: 4px;
+      padding: 0.6rem 1.5rem; font-family: 'DM Mono', monospace; font-size: 0.68rem;
+      letter-spacing: 0.15em; text-transform: uppercase; cursor: pointer; transition: background 0.15s;
+    }
+    .save-btn:hover { background: var(--accent); }
+    .save-btn:disabled { opacity: 0.5; cursor: default; }
+
+    @media (max-width: 680px) {
+      .lead-story { grid-template-columns: 1fr; gap: 1.5rem; }
+      .lead-num { font-size: 5.5rem; }
+      .story-pair { grid-template-columns: 1fr; }
+      .story-col { padding: 0 0 2rem; border-left: none !important; }
+      .story-col + .story-col { border-top: 1px solid var(--rule); padding-top: 2rem; }
+      .hero { height: 220px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div style="display:flex;align-items:center;gap:1.25rem;">
+    <a class="back-btn" href="LandingPage.html">Calendar</a>
+    <a class="back-btn" id="monthly-btn" href="MonthlyPage.html">Monthly</a>
+  </div>
+</div>
+
+<div class="hero">
+  <div class="hero-inner">
+    <span class="hero-glyph">◆</span>
+    <span class="hero-label">Cover image</span>
+  </div>
+</div>
+
+<header class="masthead">
+  <div class="masthead-eyebrow" id="eyebrow">Curated Intelligence</div>
+  <div class="masthead-title">AI Weekly <span>Signal</span></div>
+  <div class="masthead-subtitle">Welcome to your <strong>weekly news page on AI</strong> in the 5 largest industries</div>
+  <div class="masthead-meta">
+    <span id="edition-num">—</span>
+    <span class="dot">◆</span>
+    <span id="edition-date">—</span>
+    <span class="dot">◆</span>
+    <span>Top 5 Stories</span>
+    <button class="header-edit-btn" id="header-edit-btn" title="Edit edition info" style="display:none">
+      <svg width="13" height="13" viewBox="0 0 15 15" fill="none"><path d="M10.5 1.5L13.5 4.5L4.5 13.5H1.5V10.5L10.5 1.5Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M8.5 3.5L11.5 6.5" stroke="currentColor" stroke-width="1.4"/></svg>
+    </button>
+  </div>
+</header>
+
+<main class="content">
+  <div class="section-label" id="section-label">This week's picks</div>
+  <div id="stories"></div>
+</main>
+
+<footer>AI Weekly Signal &nbsp;◆&nbsp; Created by Matteo Di Rito with Claude on AI</footer>
+
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title" id="modal-title">Edit</div>
+        <div class="modal-subtitle" id="modal-subtitle"></div>
+      </div>
+      <button class="modal-close" id="modal-close">&#x2715;</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+    <div class="modal-footer">
+      <div style="display:flex;gap:0.5rem;">
+        <button class="clear-btn hidden" id="clear-btn">Clear</button>
+        <button class="reset-btn hidden" id="reset-btn">Reset</button>
+      </div>
+      <div class="modal-footer-right">
+        <span class="save-msg" id="save-msg">Saved ✓</span>
+        <button class="save-btn" id="save-btn">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const BLANK_NEWS = () => Array.from({ length: 5 }, (_, i) => ({
+    tag: ['Models','Research','Industry','Policy','Tools'][i],
+    headline: `Your story ${i + 1} headline goes here`,
+    desc: 'A short 1–2 sentence summary of why this story matters and what happened.',
+    url: 'https://example.com', checked: false
+  }));
+
+  function getDateParam() {
+    const p = new URLSearchParams(location.search).get('date');
+    if (p) return p;
+    const d = new Date(); d.setHours(0,0,0,0);
+    const day = d.getDay();
+    d.setDate(d.getDate() - (day + 2) % 7);
+    const pad = n => String(n).padStart(2,'0');
+    return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+  }
+
+  const DATE_KEY     = getDateParam();
+  const EDITION_TYPE = new URLSearchParams(location.search).get('type') || 'weekly';
+  const EDIT_MODE    = location.hostname === 'localhost' || location.hostname === '127.0.0.1'
+                    || new URLSearchParams(location.search).get('edit') === '1';
+
+  let allEditions  = [];
+  let currentData  = null;
+  let saveCallback = null;
+  let activeStoryIdx = null;
+
+  if (EDIT_MODE) {
+    document.body.classList.add('edit-mode');
+    document.getElementById('header-edit-btn').style.display = '';
+  }
+
+  const editPencil = `<svg width="12" height="12" viewBox="0 0 15 15" fill="none"><path d="M10.5 1.5L13.5 4.5L4.5 13.5H1.5V10.5L10.5 1.5Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M8.5 3.5L11.5 6.5" stroke="currentColor" stroke-width="1.5"/></svg>`;
+
+  document.getElementById('monthly-btn').href = `MonthlyPage.html?month=${DATE_KEY.slice(0,7)}`;
+
+  function articleUrl(idx) {
+    return `ReaderPage.html?date=${DATE_KEY}&idx=${idx}${EDITION_TYPE==='monthly'?'&type=monthly':''}`;
+  }
+
+  function render(data) {
+    const isMonthly = EDITION_TYPE === 'monthly';
+    document.getElementById('eyebrow').textContent       = isMonthly ? 'Monthly Recap' : 'Curated Intelligence';
+    document.getElementById('edition-num').textContent   = `Vol. ${data.edition.number}`;
+    document.getElementById('edition-date').textContent  = data.edition.date;
+    document.title = `AI Weekly Signal — ${data.edition.date}`;
+
+    const news = data.news || [];
+    const container = document.getElementById('stories');
+    container.innerHTML = '';
+
+    // Story 1 — lead
+    if (news[0]) {
+      const wrap = document.createElement('div');
+      wrap.className = 'story-wrap';
+      const btn = document.createElement('button');
+      btn.className = 'story-edit-btn';
+      btn.title = 'Edit story 1';
+      btn.innerHTML = editPencil;
+      btn.addEventListener('click', () => openStoryModal(0));
+      const lead = document.createElement('div');
+      lead.className = 'lead-story';
+      lead.innerHTML = `
+        <div>
+          <div class="lead-num">01</div>
+          <div class="story-tag">${news[0].tag}</div>
+          <div class="lead-headline">${news[0].headline}</div>
+        </div>
+        <div style="display:flex;flex-direction:column;justify-content:space-between;">
+          <p class="lead-desc">${news[0].desc}</p>
+          <div id="lead-link-wrap"></div>
+        </div>
+      `;
+      const leadLink = document.createElement('a');
+      leadLink.className = 'read-link';
+      leadLink.href = articleUrl(0);
+      leadLink.textContent = 'Read story';
+      lead.querySelector('#lead-link-wrap').replaceWith(leadLink);
+      wrap.appendChild(makeCheckBtn(0));
+      wrap.appendChild(btn);
+      wrap.appendChild(lead);
+      container.appendChild(wrap);
+    }
+
+    // Stories 2 & 3
+    if (news[1] || news[2]) container.appendChild(makePair(news[1], 1, '02', news[2], 2, '03'));
+
+    // Mid image
+    const mid = document.createElement('div');
+    mid.className = 'mid-image';
+    mid.innerHTML = `<div class="mid-inner"><span>◆</span>Editorial image</div>`;
+    container.appendChild(mid);
+
+    // Stories 4 & 5
+    if (news[3] || news[4]) container.appendChild(makePair(news[3], 3, '04', news[4], 4, '05'));
+  }
+
+  function makeCheckBtn(idx) {
+    const btn = document.createElement('button');
+    btn.className = 'story-check-btn' + (currentData.news[idx]?.checked ? ' is-checked' : '');
+    btn.title = 'Mark as done';
+    btn.textContent = '✓';
+    btn.addEventListener('click', () => toggleCheck(idx, btn));
+    return btn;
+  }
+
+  async function toggleCheck(idx, btn) {
+    if (!EDIT_MODE) return;
+    currentData.news[idx].checked = !currentData.news[idx].checked;
+    btn.classList.toggle('is-checked', currentData.news[idx].checked);
+    const filled = currentData.news.filter(s => s.checked).length;
+    const edIdx = allEditions.findIndex(e => e.date === DATE_KEY);
+    const entry = { ...currentData, date: DATE_KEY, type: EDITION_TYPE, filled };
+    if (edIdx >= 0) allEditions[edIdx] = entry; else allEditions.push(entry);
+    await fetch('/save', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ file:'editions.json', data: allEditions }) });
+  }
+
+  function makePair(a, ia, na, b, ib, nb) {
+    const pair = document.createElement('div');
+    pair.className = 'story-pair';
+    [[a, ia, na], [b, ib, nb]].forEach(([s, idx, n]) => {
+      if (!s) return;
+      const col = document.createElement('div');
+      col.className = 'story-col';
+      // Set innerHTML first (btn not in col yet — no double-button)
+      col.innerHTML = `
+        <div class="story-num">${n}</div>
+        <div class="story-tag">${s.tag}</div>
+        <div class="story-headline">${s.headline}</div>
+        <p class="story-desc">${s.desc}</p>
+      `;
+      // Add read link via DOM (.href handles & correctly, unlike innerHTML)
+      const link = document.createElement('a');
+      link.className = 'read-link';
+      link.href = articleUrl(idx);
+      link.textContent = 'Read story';
+      col.appendChild(link);
+      // Prepend edit btn with event listener
+      const btn = document.createElement('button');
+      btn.className = 'story-edit-btn';
+      btn.title = `Edit story ${idx + 1}`;
+      btn.innerHTML = editPencil;
+      btn.addEventListener('click', () => openStoryModal(idx));
+      col.insertBefore(btn, col.firstChild);
+      col.insertBefore(makeCheckBtn(idx), col.firstChild);
+      pair.appendChild(col);
+    });
+    return pair;
+  }
+
+  // ── Header modal ──
+  function openHeaderModal() {
+    document.getElementById('modal-title').textContent    = 'Edit Header';
+    document.getElementById('modal-subtitle').textContent = 'Vol. & Date';
+    document.getElementById('modal-body').innerHTML = `
+      <div class="field-row">
+        <div class="field-group">
+          <label class="field-label">Vol. Number</label>
+          <input class="field-input" id="f-vol" type="number" min="1" value="${currentData.edition.number}">
+        </div>
+        <div class="field-group">
+          <label class="field-label">Date</label>
+          <input class="field-input" id="f-date" type="text" value="${currentData.edition.date}">
+        </div>
+      </div>
+    `;
+    saveCallback = () => {
+      const updated = JSON.parse(JSON.stringify(currentData));
+      updated.edition.number = parseInt(document.getElementById('f-vol').value, 10);
+      updated.edition.date   = document.getElementById('f-date').value.trim();
+      return updated;
+    };
+    showModal(false);
+  }
+
+  // ── Story modal ──
+  function openStoryModal(i) {
+    activeStoryIdx = i;
+    const item = currentData.news[i];
+    const tags = ['Models','Research','Industry','Policy','Tools','Business','Science','Ethics','Products'];
+    document.getElementById('modal-title').textContent    = `Story ${i + 1}`;
+    document.getElementById('modal-subtitle').textContent = item.tag;
+    const body = document.getElementById('modal-body');
+    body.innerHTML = `
+      <div class="field-group">
+        <label class="field-label">Tag</label>
+        <input class="field-input" id="f-tag" type="text" list="tag-suggestions">
+        <datalist id="tag-suggestions">${tags.map(t => `<option value="${t}">`).join('')}</datalist>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Headline</label>
+        <input class="field-input" id="f-headline" type="text">
+      </div>
+      <div class="field-group">
+        <label class="field-label">Summary</label>
+        <textarea class="field-textarea" id="f-desc"></textarea>
+      </div>
+      <div class="field-group">
+        <label class="field-label">URL</label>
+        <input class="field-input" id="f-url" type="text">
+      </div>
+      <div class="field-group">
+        <label class="field-label">Short title (for calendar)</label>
+        <input class="field-input" id="f-short-title" type="text" placeholder="">
+      </div>
+      <div class="field-group">
+        <label class="field-label">News date (YYYY-MM-DD)</label>
+        <input class="field-input" id="f-news-date" type="date">
+      </div>
+    `;
+    body.querySelector('#f-tag').value       = item.tag       || '';
+    body.querySelector('#f-headline').value  = item.headline  || '';
+    body.querySelector('#f-desc').value      = item.desc      || '';
+    body.querySelector('#f-url').value         = item.url         || '';
+    body.querySelector('#f-short-title').value = item.short_title || '';
+    body.querySelector('#f-news-date').value   = item.news_date   || '';
+    saveCallback = () => {
+      const updated = JSON.parse(JSON.stringify(currentData));
+      updated.news[i].tag       = document.getElementById('f-tag').value.trim();
+      updated.news[i].headline  = document.getElementById('f-headline').value.trim();
+      updated.news[i].desc      = document.getElementById('f-desc').value.trim();
+      updated.news[i].url         = document.getElementById('f-url').value.trim();
+      updated.news[i].short_title = document.getElementById('f-short-title').value.trim();
+      updated.news[i].news_date   = document.getElementById('f-news-date').value.trim();
+      return updated;
+    };
+    showModal(true);
+  }
+
+  function showModal(showClear = false) {
+    document.getElementById('save-msg').classList.remove('visible');
+    document.getElementById('save-btn').disabled = false;
+    document.getElementById('clear-btn').classList.toggle('hidden', !showClear);
+    document.getElementById('reset-btn').classList.toggle('hidden', !showClear);
+    document.getElementById('modal-overlay').classList.add('open');
+    setTimeout(() => {
+      const first = document.querySelector('.modal-body .field-input, .modal-body .field-textarea');
+      if (first) first.focus();
+    }, 50);
+  }
+  function closeModal() {
+    document.getElementById('modal-overlay').classList.remove('open');
+    saveCallback = null;
+  }
+
+  document.getElementById('header-edit-btn').addEventListener('click', openHeaderModal);
+  document.getElementById('modal-close').addEventListener('click', closeModal);
+  document.getElementById('clear-btn').addEventListener('click', () => {
+    document.querySelectorAll('.modal-body .field-input, .modal-body .field-textarea')
+      .forEach(el => { el.value = ''; });
+  });
+  document.getElementById('reset-btn').addEventListener('click', () => {
+    if (activeStoryIdx === null) return;
+    const d = BLANK_NEWS()[activeStoryIdx];
+    document.getElementById('f-tag').value      = d.tag;
+    document.getElementById('f-headline').value = d.headline;
+    document.getElementById('f-desc').value     = d.desc;
+    document.getElementById('f-url').value      = d.url;
+  });
+  document.getElementById('modal-overlay').addEventListener('click', e => { if (e.target === e.currentTarget) closeModal(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+  document.getElementById('save-btn').addEventListener('click', async () => {
+    if (!EDIT_MODE || !saveCallback) return;
+    const btn = document.getElementById('save-btn');
+    const msg = document.getElementById('save-msg');
+    btn.disabled = true;
+    const updatedEdition = saveCallback();
+    currentData = updatedEdition;
+    const filled = updatedEdition.news.filter(s => s.checked).length;
+    const idx = allEditions.findIndex(e => e.date === DATE_KEY);
+    const entry = { ...updatedEdition, date: DATE_KEY, type: EDITION_TYPE, filled };
+    if (idx >= 0) allEditions[idx] = entry; else allEditions.push(entry);
+    try {
+      const res  = await fetch('/save', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ file:'editions.json', data: allEditions }) });
+      const json = await res.json();
+      if (!json.ok) throw new Error(json.error);
+      render(currentData);
+      msg.classList.add('visible');
+      setTimeout(() => { msg.classList.remove('visible'); closeModal(); }, 1000);
+    } catch(e) {
+      alert('Could not save: ' + e.message);
+      btn.disabled = false;
+    }
+  });
+
+  fetch('./editions.json')
+    .then(r => r.json())
+    .then(all => {
+      allEditions = all;
+      const found = all.find(e => e.date === DATE_KEY);
+      if (found) {
+        const { date, ...rest } = found;
+        currentData = rest;
+      } else {
+        currentData = {
+          type: EDITION_TYPE,
+          filled: 0,
+          edition: { number: all.length + 1, date: new Date(DATE_KEY+'T12:00:00').toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}) },
+          news: BLANK_NEWS()
+        };
+      }
+      render(currentData);
+    })
+    .catch(() => {
+      document.getElementById('stories').innerHTML =
+        `<p style="font-family:'DM Mono',monospace;font-size:0.8rem;color:var(--muted);padding:3rem 0">Could not load editions.</p>`;
+    });
+</script>
+</body>
+</html>
